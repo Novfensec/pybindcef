@@ -33,9 +33,9 @@
 *.lib
 
 # Executables
-*.exe
 *.out
 *.app
+*.exe
 
 # debug information files
 *.dwo
