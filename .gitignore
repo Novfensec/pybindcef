@@ -43,3 +43,8 @@
 build/
 *.log
 web_cache
+
+wheelhouse
+dist
+
+.pypirc
