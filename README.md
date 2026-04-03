@@ -39,6 +39,13 @@ High-performance Python bindings for Chromium Embedded Framework (CEF)
 
 - Linux
 
+    Install bare bones extension from pypi:
+    ```bash
+    pip install pybindcef
+    ```
+
+    OR BUILD FROM SOURCE:
+
     Clone this repository.
 
     ```bash
@@ -55,7 +62,9 @@ High-performance Python bindings for Chromium Embedded Framework (CEF)
     make
     ```
 
-    Now build `cef_worker`
+### Building `cef_worker`
+
+- Linux
 
     ```bash
     mkdir pybindcef/cef_worker/build
