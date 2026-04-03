@@ -1,0 +1,24 @@
+[build-system]
+requires = ["scikit-build-core", "pybind11"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "pybindcef"
+version = "0.1.0"
+description = "High-performance Python bindings for Chromium Embedded Framework (CEF)"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+  { name = "Kartavya Shukla", email = "novfensec@protonmail.com" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+]
+dependencies = []
+
+[tool.scikit-build]
+cmake.version = ">=3.15"
+wheel.install-dir = "pybindcef"

@@ -1,5 +1,5 @@
 # pybindcef
-Python bindings for CEF (chromium embedded framework).
+High-performance Python bindings for Chromium Embedded Framework (CEF)
 
 ## Build Instructions
 
