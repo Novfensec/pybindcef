@@ -23,8 +23,8 @@ class CefBrowser(Widget):
 
     def on_paint(self, buffer, width, height):
         try:
-
-            self.tex.blit_buffer(buffer, colorfmt='bgra', bufferfmt='ubyte')
+            safe_buffer = bytes(buffer)
+            self.tex.blit_buffer(safe_buffer, colorfmt='bgra', bufferfmt='ubyte')
             self.canvas.ask_update()
         except Exception as e:
             print(f"Paint Error: {e}")

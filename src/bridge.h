@@ -31,7 +31,7 @@ public:
             auto mview = py::memoryview::from_memory(
                 const_cast<void*>(buffer), 
                 static_cast<ssize_t>(size), 
-                false
+                true
             );
             callback_(mview, width, height);
         }
