@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 if(DEFINED ENV{CEF_ROOT})
     set(CEF_ROOT $ENV{CEF_ROOT})
 else()
-    set(CEF_ROOT "/home/kartavya/Downloads/cef_binary")
+    set(CEF_ROOT "~/Downloads/cef_binary")
 endif()
 
 if(DEFINED ENV{CEF_DLL_WRAPPER_ROOT})
