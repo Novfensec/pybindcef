@@ -7,14 +7,14 @@
 
 namespace py = pybind11;
 
-class KivyHandler : public CefClient, public CefRenderHandler, public CefLifeSpanHandler {
+class MainHandler : public CefClient, public CefRenderHandler, public CefLifeSpanHandler {
 public:
     int width_ = 800;
     int height_ = 600;
 
     using PaintCallback = std::function<void(py::object, int, int)>;
 
-    KivyHandler(PaintCallback cb) : callback_(cb) {}
+    MainHandler(PaintCallback cb) : callback_(cb) {}
 
     CefRefPtr<CefRenderHandler> GetRenderHandler() override { return this; }
     CefRefPtr<CefLifeSpanHandler> GetLifeSpanHandler() override { return this; }
@@ -47,7 +47,7 @@ public:
         g_browser = nullptr;
     }
 
-    IMPLEMENT_REFCOUNTING(KivyHandler);
+    IMPLEMENT_REFCOUNTING(MainHandler);
 
 private:
     PaintCallback callback_;

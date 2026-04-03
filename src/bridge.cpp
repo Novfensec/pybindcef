@@ -6,7 +6,7 @@
 
 namespace py = pybind11;
 
-CefRefPtr<KivyHandler> g_handler;
+CefRefPtr<MainHandler> g_handler;
 CefRefPtr<CefBrowser> g_browser;
 
 PYBIND11_MODULE(pybindcef, m) {
@@ -33,12 +33,12 @@ PYBIND11_MODULE(pybindcef, m) {
         return CefInitialize(args, settings, nullptr, nullptr);
     });
 
-    m.def("create_browser", [](std::string url, KivyHandler::PaintCallback cb) {
+    m.def("create_browser", [](std::string url, MainHandler::PaintCallback cb) {
         CefWindowInfo window_info;
         window_info.SetAsWindowless(0);
 
         CefBrowserSettings settings;
-        g_handler = new KivyHandler(cb);
+        g_handler = new MainHandler(cb);
         
         CefBrowserHost::CreateBrowser(window_info, g_handler, url, settings, nullptr, nullptr);
     });
