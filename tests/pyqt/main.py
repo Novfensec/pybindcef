@@ -24,7 +24,7 @@ class PyQtCefTest(QWidget):
         self.view.setMinimumSize(1, 1) 
         self.layout.addWidget(self.view)
 
-        pybindcef.create_browser("https://github.com", self.on_paint)
+        pybindcef.create_browser("https://testufo.com", self.on_paint)
 
         self.timer = QTimer()
         self.timer.timeout.connect(pybindcef.do_work)
