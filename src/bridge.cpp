@@ -30,15 +30,20 @@ PYBIND11_MODULE(pybindcef, m) {
         return CefInitialize(args, settings, nullptr, nullptr);
     });
 
-    m.def("create_browser", [](std::string url, MainHandler::PaintCallback cb) {
+    m.def("create_browser", [](std::string url, MainHandler::PaintCallback cb, MainHandler::AccelPaintCallback acb) {
         CefWindowInfo window_info;
         window_info.SetAsWindowless(0);
+        window_info.shared_texture_enabled = true;
 
         CefBrowserSettings settings;
-        g_handler = new MainHandler(cb);
+        g_handler = new MainHandler(cb, acb);
         
         CefBrowserHost::CreateBrowser(window_info, g_handler, url, settings, nullptr, nullptr);
-    });
+    },
+    py::arg("url"),
+    py::arg("on_cpu_paint") = nullptr,
+    py::arg("on_gpu_paint") = nullptr
+    );
 
     m.def("resize", [](int w, int h) {
         if (g_handler && g_browser) {

@@ -13,8 +13,9 @@ public:
     int height_ = 600;
 
     using PaintCallback = std::function<void(py::object, int, int)>;
+    using AccelPaintCallback = std::function<void(uint64_t, int, int)>;
 
-    MainHandler(PaintCallback cb) : callback_(cb) {}
+    MainHandler(PaintCallback cb, AccelPaintCallback acb) : callback_(cb), accel_callback_(acb) {}
 
     CefRefPtr<CefRenderHandler> GetRenderHandler() override { return this; }
     CefRefPtr<CefLifeSpanHandler> GetLifeSpanHandler() override { return this; }
@@ -47,8 +48,40 @@ public:
         g_browser = nullptr;
     }
 
+    virtual void OnAcceleratedPaint(
+        CefRefPtr<CefBrowser> browser,
+        CefRenderHandler::PaintElementType type,
+        const CefRenderHandler::RectList& dirtyRects,
+        void* share_handle
+    ) override {
+        if (accel_callback_ && share_handle) {
+            uint64_t handle_id = 0;
+
+            #if defined(_WIN32)
+                handle_id = reinterpret_cast<uint64_t>(share_handle);
+
+            #elif defined(__APPLE__)
+                #include <TargetConditionals.h>
+                #if TARGET_OS_IPHONE
+                    handle_id = static_cast<uint64_t>(reinterpret_cast<uintptr_t>(share_handle));
+                #else
+                    handle_id = reinterpret_cast<uint64_t>(share_handle);
+                #endif
+
+            #elif defined(__ANDROID__)
+                handle_id = reinterpret_cast<uint64_t>(share_handle);
+
+            #elif defined(__linux__)
+                handle_id = static_cast<uint64_t>(reinterpret_cast<uintptr_t>(share_handle));
+            #endif
+
+            accel_callback_(handle_id, width_, height_); 
+        }
+    }
+
     IMPLEMENT_REFCOUNTING(MainHandler);
 
 private:
     PaintCallback callback_;
+    AccelPaintCallback accel_callback_;
 };
