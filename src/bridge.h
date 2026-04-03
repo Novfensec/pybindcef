@@ -52,27 +52,27 @@ public:
         CefRefPtr<CefBrowser> browser,
         CefRenderHandler::PaintElementType type,
         const CefRenderHandler::RectList& dirtyRects,
-        void* share_handle
+        const CefAcceleratedPaintInfo& info
     ) override {
-        if (accel_callback_ && share_handle) {
+        if (accel_callback_) {
             uint64_t handle_id = 0;
 
             #if defined(_WIN32)
-                handle_id = reinterpret_cast<uint64_t>(share_handle);
+                handle_id = static_cast<uint64_t>(reinterpret_cast<uintptr_t>(info.shared_texture_handle));
 
             #elif defined(__APPLE__)
                 #include <TargetConditionals.h>
                 #if TARGET_OS_IPHONE
-                    handle_id = static_cast<uint64_t>(reinterpret_cast<uintptr_t>(share_handle));
+                    handle_id = static_cast<uint64_t>(reinterpret_cast<uintptr_t>(info.shared_texture_io_surface));
                 #else
-                    handle_id = reinterpret_cast<uint64_t>(share_handle);
+                    handle_id = static_cast<uint64_t>(reinterpret_cast<uintptr_t>(info.shared_texture_io_surface));
                 #endif
 
             #elif defined(__ANDROID__)
-                handle_id = reinterpret_cast<uint64_t>(share_handle);
+                handle_id = static_cast<uint64_t>(reinterpret_cast<uintptr_t>(info.shared_texture_handle));
 
             #elif defined(__linux__)
-                handle_id = static_cast<uint64_t>(reinterpret_cast<uintptr_t>(share_handle));
+                handle_id = static_cast<uint64_t>(info.planes[0].fd);
             #endif
 
             accel_callback_(handle_id, width_, height_); 
