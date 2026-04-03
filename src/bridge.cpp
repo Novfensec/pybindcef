@@ -24,10 +24,7 @@ PYBIND11_MODULE(pybindcef, m) {
         std::string cache_p = res_path + "/web_cache";
         CefString(&settings.cache_path).FromASCII(cache_p.c_str());
         CefString(&settings.browser_subprocess_path).FromASCII(sub_path.c_str());
-        CefString(&settings.resources_dir_path).FromASCII(res_path.c_str());
 
-        std::string locales_path = res_path + "/locales";
-        CefString(&settings.locales_dir_path).FromASCII(locales_path.c_str());
         CefString(&settings.log_file).FromASCII("cef.log");
 
         return CefInitialize(args, settings, nullptr, nullptr);

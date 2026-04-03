@@ -1,5 +1,2 @@
-[3780:3780:0403/081139.770960:ERROR:base/memory/shared_memory_switch.cc:289] Failed global descriptor lookup: 7
-[3751:3751:0403/081139.986003:WARNING:chrome/browser/signin/account_consistency_mode_manager.cc:74] Desktop Identity Consistency cannot be enabled as no OAuth client ID and client secret have been configured.
-[3780:3787:0403/081155.027124:WARNING:net/spdy/spdy_session.cc:3065] Received HEADERS for invalid stream 1
-[3780:3788:0403/081155.133145:WARNING:net/extras/sqlite/sqlite_persistent_store_backend_base.cc:176] Failed to post task from FlushAndNotifyInBackground@net/extras/sqlite/sqlite_persistent_store_backend_base.cc:226 to client_task_runner_.
-[3780:3788:0403/081155.133446:WARNING:net/extras/sqlite/sqlite_persistent_store_backend_base.cc:176] Failed to post task from FlushAndNotifyInBackground@net/extras/sqlite/sqlite_persistent_store_backend_base.cc:226 to client_task_runner_.
+[4248:4248:0403/113440.081062:ERROR:base/memory/shared_memory_switch.cc:289] Failed global descriptor lookup: 7
+[4218:4218:0403/113440.214289:WARNING:chrome/browser/signin/account_consistency_mode_manager.cc:74] Desktop Identity Consistency cannot be enabled as no OAuth client ID and client secret have been configured.

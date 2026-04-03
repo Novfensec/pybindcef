@@ -17,7 +17,7 @@ class CefBrowser(Widget):
             Color(1, 1, 1, 1)
             self.rect = Rectangle(texture=self.tex, pos=self.pos, size=(800, 600))
 
-        pybindcef.create_browser("https://www.github.com/", self.on_paint)
+        pybindcef.create_browser("https://www.testufo.com/", self.on_paint)
 
         Clock.schedule_interval(self.update_cef, 1/60.0)
 
@@ -39,7 +39,7 @@ class MainApp(App):
         worker_exe = os.path.join(base, "linux", "cef_worker")
 
         res_dir = os.path.join(base, "Resources")
-        
+
         print(f"Initializing CEF...")
         print(f"Worker: {worker_exe}")
         print(f"Resources: {res_dir}")
@@ -48,7 +48,7 @@ class MainApp(App):
         
         return CefBrowser()
 
-    def on_stop(self):
+    def on_pause(self):
         pybindcef.shutdown()
 
 if __name__ == '__main__':
