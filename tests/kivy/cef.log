@@ -1,2 +1,0 @@
-[4248:4248:0403/113440.081062:ERROR:base/memory/shared_memory_switch.cc:289] Failed global descriptor lookup: 7
-[4218:4218:0403/113440.214289:WARNING:chrome/browser/signin/account_consistency_mode_manager.cc:74] Desktop Identity Consistency cannot be enabled as no OAuth client ID and client secret have been configured.

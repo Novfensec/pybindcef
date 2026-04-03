@@ -42,14 +42,14 @@ Clone this repository.
 - Linux
 
     ```bash
-    git clone https://github.com/Novfensec/pybindcef
+    git clone https://github.com/Novfensec/pybindcef -b main --single-branch --depth 1
     ```
 
-    Now build the extension; `-DPython_EXECUTABLE="pythonexecutablewithversion"`
+    Now build the extension with `-DPython_EXECUTABLE="pythonexecutablewithversion"`
 
     ```bash
-    mkdir build
-    cd build
+    mkdir pybinfcef/build
+    cd pybindcef/build
 
     cmake .. -DPython_EXECUTABLE=/usr/bin/python
     make
@@ -58,10 +58,18 @@ Clone this repository.
     Now build `cef_worker`
 
     ```bash
-    mkdir cef_worker/build
-    cd cef_worker/build
+    mkdir pybindcef/cef_worker/build
+    cd pybindcef/cef_worker/build
 
     cmake ..
     make
     ```
+
+### Extracting resources
+
+Copy all files under `cef_binary/Resources` to `cef_binary/Release`
+
+```bash
+cp -r ~/Downloads/cef_binary/Resources/* ~/Downloads/cef_binary/Release/
+```
 
