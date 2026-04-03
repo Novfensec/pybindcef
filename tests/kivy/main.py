@@ -17,7 +17,7 @@ class CefBrowser(Widget):
             Color(1, 1, 1, 1)
             self.rect = Rectangle(texture=self.tex, pos=self.pos, size=(800, 600))
 
-        pybindcef.create_browser("https://www.testufo.com/", self.on_paint)
+        pybindcef.create_browser("https://www.github.com/", self.on_paint)
 
         Clock.schedule_interval(self.update_cef, 1/60.0)
 
