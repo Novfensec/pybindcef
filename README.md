@@ -5,9 +5,9 @@ Python bindings for CEF (chromium embedded framework).
 
 ### Building `libcef_dll_wrapper`
 
-Download cef minimal build for your system architecture via https://cef-builds.spotifycdn.com
-
 - Linux
+
+    Download cef minimal build for your system architecture via https://cef-builds.spotifycdn.com
 
     ```bash
     mkdir -p ~/Downloads/cef_binary
@@ -37,9 +37,9 @@ Download cef minimal build for your system architecture via https://cef-builds.s
 
 ### Building `pybindcef` extension
 
-Clone this repository.
-
 - Linux
+
+    Clone this repository.
 
     ```bash
     git clone https://github.com/Novfensec/pybindcef -b main --single-branch --depth 1
@@ -48,7 +48,7 @@ Clone this repository.
     Now build the extension with `-DPython_EXECUTABLE="pythonexecutablewithversion"`
 
     ```bash
-    mkdir pybinfcef/build
+    mkdir pybindcef/build
     cd pybindcef/build
 
     cmake .. -DPython_EXECUTABLE=/usr/bin/python
