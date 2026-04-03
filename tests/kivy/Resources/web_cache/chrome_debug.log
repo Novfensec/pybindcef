@@ -1,9 +1,0 @@
-[7299:7299:0402/223427.216734:ERROR:media/gpu/vaapi/vaapi_wrapper.cc:1640] vaInitialize failed: unknown libva error
-[7345:7360:0402/223430.149264:ERROR:gpu/ipc/client/command_buffer_proxy_impl.cc:287] ContextResult::kTransientFailure: Failed to send GpuControl.CreateCommandBuffer.
-[7422:7422:0402/223517.893802:ERROR:media/gpu/vaapi/vaapi_wrapper.cc:1640] vaInitialize failed: unknown libva error
-[7471:7485:0402/223521.462185:ERROR:gpu/ipc/client/command_buffer_proxy_impl.cc:287] ContextResult::kTransientFailure: Failed to send GpuControl.CreateCommandBuffer.
-[7532:7532:0402/223541.098147:ERROR:media/gpu/vaapi/vaapi_wrapper.cc:1640] vaInitialize failed: unknown libva error
-[7581:7594:0402/223546.675078:ERROR:gpu/ipc/client/command_buffer_proxy_impl.cc:287] ContextResult::kTransientFailure: Failed to send GpuControl.CreateCommandBuffer.
-[7645:7645:0402/223604.403595:ERROR:media/gpu/vaapi/vaapi_wrapper.cc:1640] vaInitialize failed: unknown libva error
-[7693:7707:0402/223611.377363:ERROR:gpu/ipc/client/command_buffer_proxy_impl.cc:287] ContextResult::kTransientFailure: Failed to send GpuControl.CreateCommandBuffer.
-[3775:3775:0403/081145.969892:ERROR:media/gpu/vaapi/vaapi_wrapper.cc:1640] vaInitialize failed: unknown libva error
