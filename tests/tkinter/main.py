@@ -32,7 +32,7 @@ class TkCefTest:
 
     def update_loop(self):
         pybindcef.do_work()
-        self.root.after(10, self.update_loop)
+        self.root.after(0, self.update_loop)
 
 if __name__ == "__main__":
     root = tk.Tk()

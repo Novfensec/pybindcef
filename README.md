@@ -73,3 +73,32 @@ Copy all files under `cef_binary/Resources` to `cef_binary/Release`
 cp -r ~/Downloads/cef_binary/Resources/* ~/Downloads/cef_binary/Release/
 ```
 
+## Tests
+
+### Linux
+
+1. Kivy
+
+    - Copy `pybindcef` extension and `cef_worker` executable to `pybindcef/tests/kivy/`.
+    - Run main.py with the python executable version suitable for the extension.
+    ```bash
+    python main.py
+    ```
+
+2. PyQt
+
+    - Copy `pybindcef` extension and `cef_worker` executable to `pybindcef/tests/pyqt/`.
+    - Run main.py with the python executable version suitable for the extension.
+    ```bash
+    python main.py
+    ```
+
+3. Tkinter
+
+    - Copy `pybindcef` extension and `cef_worker` executable to `pybindcef/tests/tkinter/`.
+    - Run main.py with the python executable version suitable for the extension.
+    ```bash
+    python main.py
+    ```
+
+

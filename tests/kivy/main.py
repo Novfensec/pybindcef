@@ -36,7 +36,7 @@ class MainApp(App):
     def build(self):
         base = os.path.dirname(os.path.abspath(__file__))
 
-        worker_exe = os.path.join(base, "linux", "cef_worker")
+        worker_exe = os.path.join(base, "cef_worker")
 
         res_dir = os.path.join(base, "Resources")
 
