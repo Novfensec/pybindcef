@@ -6,6 +6,9 @@
 
 namespace py = pybind11;
 
+CefRefPtr<KivyHandler> g_handler;
+CefRefPtr<CefBrowser> g_browser;
+
 PYBIND11_MODULE(pybindcef, m) {
     m.def("initialize", [](std::string sub_path, std::string res_path) {
         int argc = 0;
@@ -16,19 +19,15 @@ PYBIND11_MODULE(pybindcef, m) {
         settings.no_sandbox = true;
         settings.windowless_rendering_enabled = true;
         settings.external_message_pump = false;
-        settings.multi_threaded_message_loop = false; // Keep everything on one thread for Kivy
+        settings.multi_threaded_message_loop = false;
 
         std::string cache_p = res_path + "/web_cache";
         CefString(&settings.cache_path).FromASCII(cache_p.c_str());
-
         CefString(&settings.browser_subprocess_path).FromASCII(sub_path.c_str());
         CefString(&settings.resources_dir_path).FromASCII(res_path.c_str());
 
-
         std::string locales_path = res_path + "/locales";
         CefString(&settings.locales_dir_path).FromASCII(locales_path.c_str());
-
-        std::cout << CefString(&settings.locales_dir_path).ToString() << std::endl;
         CefString(&settings.log_file).FromASCII("cef.log");
 
         return CefInitialize(args, settings, nullptr, nullptr);
@@ -39,9 +38,18 @@ PYBIND11_MODULE(pybindcef, m) {
         window_info.SetAsWindowless(0);
 
         CefBrowserSettings settings;
-        CefRefPtr<KivyHandler> client = new KivyHandler(cb);
+        g_handler = new KivyHandler(cb);
         
-        CefBrowserHost::CreateBrowser(window_info, client, url, settings, nullptr, nullptr);
+        CefBrowserHost::CreateBrowser(window_info, g_handler, url, settings, nullptr, nullptr);
+    });
+
+    m.def("resize", [](int w, int h) {
+        if (g_handler && g_browser) {
+            g_handler->width_ = w;
+            g_handler->height_ = h;
+            g_browser->GetHost()->WasResized();
+            g_browser->GetHost()->Invalidate(PET_VIEW);
+        }
     });
 
     m.def("do_work", []() { CefDoMessageLoopWork(); });
