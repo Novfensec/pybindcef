@@ -16,7 +16,8 @@ bool platform_initialize_cef(const std::string& sub_path, const std::string& res
     CefString(&settings.cache_path).FromASCII(cache_p.c_str());
     CefString(&settings.browser_subprocess_path).FromASCII(sub_path.c_str());
 
-    CefString(&settings.log_file).FromASCII("cef.log");
+    std::string log_p = res_path + "/cef.log";
+    CefString(&settings.log_file).FromASCII(log_p.c_str());
 
     return CefInitialize(args, settings, nullptr, nullptr);
 }

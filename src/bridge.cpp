@@ -57,4 +57,34 @@ PYBIND11_MODULE(pybindcef, m) {
             g_browser->GetHost()->SetFocus(focused);
         }
     });
+
+    m.def("send_mouse_event", [](int x, int y, int event_type, bool is_up) {
+        if (!g_browser || !g_browser->GetHost()) return;
+
+        CefMouseEvent mouse_event;
+        mouse_event.x = x;
+        mouse_event.y = y;
+        mouse_event.modifiers = 0; 
+
+        if (event_type == 0) {
+            g_browser->GetHost()->SendMouseMoveEvent(mouse_event, false);
+        } else {
+            g_browser->GetHost()->SendMouseClickEvent(mouse_event, MBT_LEFT, is_up, 1);
+        }
+    });
+
+    m.def("send_key_event", [](int key_code, uint32_t modifiers, int type) {
+        if (!g_browser || !g_browser->GetHost()) return;
+
+        CefKeyEvent event;
+        event.windows_key_code = key_code;
+        event.native_key_code = key_code;
+        event.modifiers = modifiers;
+
+        if (type == 0) event.type = KEYEVENT_RAWKEYDOWN;
+        else if (type == 1) event.type = KEYEVENT_KEYUP;
+        else if (type == 2) event.type = KEYEVENT_CHAR;
+
+        g_browser->GetHost()->SendKeyEvent(event);
+    });
 }
