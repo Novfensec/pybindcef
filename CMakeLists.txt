@@ -13,7 +13,6 @@ else()
     endif()
 endif()
 
-# DLL wrapper root
 if(DEFINED ENV{CEF_DLL_WRAPPER_ROOT})
     set(CEF_DLL_WRAPPER_ROOT $ENV{CEF_DLL_WRAPPER_ROOT})
 else()

@@ -22,8 +22,6 @@ PFNWGLDXLOCKOBJECTSNVPROC wglDXLockObjectsNV = nullptr;
 PFNWGLDXUNLOCKOBJECTSNVPROC wglDXUnlockObjectsNV = nullptr;
 PFNWGLDXUNREGISTEROBJECTNVPROC wglDXUnregisterObjectNV = nullptr;
 
-// Add the global pointer
-
 void init_graphics_bridge() {
     UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
     HRESULT hr = D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, creationFlags, nullptr, 0, D3D11_SDK_VERSION, &g_d3dDevice, nullptr, nullptr);
