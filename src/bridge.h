@@ -1,6 +1,8 @@
+#pragma once
 #include "include/cef_client.h"
 #include "include/cef_render_handler.h"
 #include "include/cef_life_span_handler.h"
+#include "common/identifiers.h"
 #include <pybind11/pybind11.h>
 #include <functional>
 #include <vector>
@@ -27,23 +29,26 @@ public:
     void OnPaint(CefRefPtr<CefBrowser> browser, PaintElementType type,
                  const RectList& dirtyRects, const void* buffer,
                  int width, int height) override {
+        py::gil_scoped_acquire acquire;
         if (callback_ && buffer) {
             size_t size = static_cast<size_t>(width) * height * 4;
             auto mview = py::memoryview::from_memory(
                 const_cast<void*>(buffer), 
                 static_cast<ssize_t>(size), 
-                true
+                false
             );
             callback_(mview, width, height);
         }
     }
 
     void OnAfterCreated(CefRefPtr<CefBrowser> browser) override {
+        py::gil_scoped_acquire acquire;
         extern CefRefPtr<CefBrowser> g_browser; 
         g_browser = browser;
     }
 
     void OnBeforeClose(CefRefPtr<CefBrowser> browser) override {
+        py::gil_scoped_acquire acquire;
         extern CefRefPtr<CefBrowser> g_browser;
         g_browser = nullptr;
     }
@@ -54,6 +59,7 @@ public:
         const CefRenderHandler::RectList& dirtyRects,
         const CefAcceleratedPaintInfo& info
     ) override {
+        py::gil_scoped_acquire acquire;
         if (accel_callback_) {
             uint64_t handle_id = 0;
 

@@ -40,7 +40,7 @@
 # debug information files
 *.dwo
 
-build/
+build
 *.log
 web_cache
 
@@ -48,3 +48,9 @@ wheelhouse
 dist
 
 .pypirc
+tests/**/Resources
+tests/**/locales
+tests/**/*.pak
+*.dat
+*.bin
+.json
