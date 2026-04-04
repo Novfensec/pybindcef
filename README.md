@@ -48,6 +48,10 @@ PyPI: https://pypi.org/project/pybindcef/
 
     OR BUILD FROM SOURCE:
 
+    ```bash
+    pip install "pybind11[global]"
+    ```
+
     Clone this repository.
 
     ```bash
