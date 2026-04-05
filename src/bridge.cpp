@@ -103,6 +103,17 @@ PYBIND11_MODULE(pybindcef, m) {
         g_browser->GetHost()->SendKeyEvent(event);
     });
 
+    m.def("send_mouse_wheel", [](int x, int y, int delta_x, int delta_y) {
+        if (g_browser && g_browser->GetHost()) {
+            CefMouseEvent mouse_event;
+            mouse_event.x = x;
+            mouse_event.y = y;
+            mouse_event.modifiers = 0;
+            
+            g_browser->GetHost()->SendMouseWheelEvent(mouse_event, delta_x, delta_y);
+        }
+    });
+
     m.def("go_back", []() {
         if (g_browser && g_browser->CanGoBack()) {
             g_browser->GoBack();
