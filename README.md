@@ -1,6 +1,8 @@
 # pybindcef
 High-performance Python bindings for Chromium Embedded Framework (CEF)
 
+Thanks to [pybind11](https://github.com/pybind/pybind11) and [CEF](https://github.com/chromiumembedded/cef) for existing in this world.
+
 ## Build Instructions
 
 ### Building `libcef_dll_wrapper`
