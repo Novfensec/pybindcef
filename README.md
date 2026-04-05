@@ -27,13 +27,49 @@ High-performance Python bindings for Chromium Embedded Framework (CEF)
     make -j$(nproc)
     ```
 
-- Confirm the build
+    Confirm the build
 
     ```
     ls ~/Downloads/cef_binary/build/libcef_dll_wrapper/
     ```
 
     A file named `libcef_dll_wrapper.a` will be listed.
+
+- Windows
+
+    Download cef minimal build for your system architecture via https://cef-builds.spotifycdn.com
+
+    > **Powershell** commands below
+
+    ```powershell
+    mkdir $env:USERPROFILE\Downloads\cef_binary
+
+    wget "https://cef-builds.spotifycdn.com/cef_binary_146.0.9%2Bg3ca6a87%2Bchromium-146.0.7680.165_windows64_minimal.tar.bz2" `
+     -O $env:USERPROFILE\Downloads\cef_binary.tar.bz2
+
+    tar -xjf $env:USERPROFILE\Downloads\cef_binary.tar.bz2 -C $env:USERPROFILE\Downloads\cef_binary --strip-components=1
+    ```
+
+    Now build the libcef_dll_wrapper
+
+    ```powershell
+    mkdir $env:USERPROFILE\Downloads\cef_binary\build
+    cd $env:USERPROFILE\Downloads\cef_binary\build
+
+    # enable msvc build environment for you system x64 x86_64 x86 amd64
+    vcvarsall.bat amd64
+
+    cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+    cmake --build . --config Release --parallel
+    ```
+
+    Confirm the build
+
+    ```
+    Get-ChildItem $env:USERPROFILE\Downloads\cef_binary\build\libcef_dll_wrapper\Release
+    ```
+
+    A file named `libcef_dll_wrapper.lib` will be listed.
 
 ### Building `pybindcef` extension
 
@@ -47,6 +83,8 @@ PyPI: https://pypi.org/project/pybindcef/
     ```
 
     OR BUILD FROM SOURCE:
+
+    Install pybind11.
 
     ```bash
     pip install "pybind11[global]"
@@ -68,6 +106,30 @@ PyPI: https://pypi.org/project/pybindcef/
     make
     ```
 
+- Windows
+
+    Install pybind11.
+
+    ```bash
+    pip install "pybind11[global]"
+    ```
+
+    Clone this repository.
+
+    ```bash
+    git clone https://github.com/Novfensec/pybindcef -b main --single-branch --depth 1
+    ```
+
+    Now build the extension.
+
+    ```powershell
+    mkdir pybindcef/build
+    cd pybindcef/build
+
+    cmake .. -DCMAKE_BUILD_TYPE=Release
+    cmake --build . --config Release
+    ```
+
 ### Building `cef_worker`
 
 - Linux
@@ -80,13 +142,30 @@ PyPI: https://pypi.org/project/pybindcef/
     make
     ```
 
+- Window
+
+    ```powershell
+    mkdir pybindcef/cef_worker/build
+    cd pybindcef/cef_worker/build
+
+    cmake .. -DCMAKE_BUILD_TYPE=Release
+    cmake --build . --config Release
+    ```
+
 ### Extracting resources
 
-Copy all files under `cef_binary/Resources` to `cef_binary/Release`
+- Linux
 
-```bash
-cp -r ~/Downloads/cef_binary/Resources/* ~/Downloads/cef_binary/Release/
-```
+    Copy all files under `cef_binary/Resources` to `cef_binary/Release`
+
+    ```bash
+    cp -r ~/Downloads/cef_binary/Resources/* ~/Downloads/cef_binary/Release/
+    ```
+
+- Windows
+
+    Copy all files under `cef_binary/Resources` and `cef_binary/Release` right next to the extension.
+    All you need to do is make `libcef.dll` available in LD_LIBRARY_PATH and place the files under `cef_binary/Resources` next to `libcef.dll` that's it.
 
 ## Tests
 
@@ -115,5 +194,3 @@ cp -r ~/Downloads/cef_binary/Resources/* ~/Downloads/cef_binary/Release/
     ```bash
     python main.py
     ```
-
-
