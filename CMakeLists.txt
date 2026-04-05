@@ -45,6 +45,7 @@ elseif(UNIX AND NOT APPLE AND NOT ANDROID)
     message(STATUS "Configuring pybindcef for Linux")
     list(APPEND SOURCES 
         src/platforms/linux/app_linux.cpp
+        src/platforms/linux/gpu_mapper.cpp
     )
 endif()
 

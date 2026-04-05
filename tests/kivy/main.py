@@ -14,6 +14,7 @@ from kivy.graphics import Rectangle, Color, Callback, PushMatrix, PopMatrix, Sca
 from kivy.graphics.texture import Texture
 from kivy.clock import Clock
 from kivy.core.window import Window
+from kivy import platform
 
 
 class CefBrowser(Widget):
@@ -130,7 +131,10 @@ class CefBrowser(Widget):
 class MainApp(App):
     def build(self):
         base = os.path.dirname(os.path.abspath(__file__))
-        worker_exe = os.path.join(base, "cef_worker.exe")
+        if platform == "linux":
+            worker_exe = os.path.join(base, "cef_worker")
+        elif platform == "win":
+            worker_exe = os.path.join(base, "cef_worker.exe")
         res_dir = os.path.join(base, "Resources")
 
         pybindcef.initialize(worker_exe, res_dir)
