@@ -17,7 +17,7 @@ High-performance Python bindings for Chromium Embedded Framework (CEF)
     tar -xjf ~/Downloads/cef_binary.tar.bz2 -C ~/Downloads/cef_binary --strip-components=1
     ```
 
-    Now build the libcef_dll_wrapper
+    Now build the `libcef_dll_wrapper`
 
     ```bash
     mkdir ~/Downloads/cef_binary/build
@@ -50,7 +50,7 @@ High-performance Python bindings for Chromium Embedded Framework (CEF)
     tar -xjf $env:USERPROFILE\Downloads\cef_binary.tar.bz2 -C $env:USERPROFILE\Downloads\cef_binary --strip-components=1
     ```
 
-    Now build the libcef_dll_wrapper
+    Now build the `libcef_dll_wrapper`
 
     ```powershell
     mkdir $env:USERPROFILE\Downloads\cef_binary\build

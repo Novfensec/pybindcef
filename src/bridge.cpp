@@ -95,4 +95,26 @@ PYBIND11_MODULE(pybindcef, m) {
 
         g_browser->GetHost()->SendKeyEvent(event);
     });
+
+    m.def("go_back", []() {
+        if (g_browser) {
+            if (g_browser->CanGoBack()) {
+                g_browser->GoBack();
+            }
+        }
+    });
+
+    m.def("go_forward", []() {
+        if (g_browser) {
+            if (g_browser->CanGoForward()) {
+                g_browser->GoForward();
+            }
+        }
+    });
+
+    m.def("reload", []() {
+        if (g_browser) {
+            g_browser->Reload();
+        }
+    });
 }
