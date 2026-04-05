@@ -32,7 +32,12 @@ find_package(pybind11 REQUIRED)
 
 include_directories(${CEF_ROOT} src/)
 
-set(SOURCES src/bridge.cpp)
+set(SOURCES 
+    src/bridge.cpp
+    src/main_client.cpp
+    src/handlers/lifespan_handler.cpp
+    src/handlers/render_handler.cpp
+)
 
 if(WIN32)
     message(STATUS "Configuring pybindcef for Windows")

@@ -1,44 +1,50 @@
+#include "main_client.h"
 #include "include/cef_app.h"
-#include "bridge.h"
-#include "platform_utils.h"
-#include "common/identifiers.h"
 #include "common/gpu_mapper.h"
+#include "platform_utils.h"
 #include <pybind11/pybind11.h>
 #include <pybind11/functional.h>
-#include <iostream>
 
 namespace py = pybind11;
 
-CefRefPtr<MainHandler> g_handler;
 CefRefPtr<CefBrowser> g_browser;
+CefRefPtr<MainClient> g_client;
 
 PYBIND11_MODULE(pybindcef, m) {
     m.def("initialize", [](std::string sub_path, std::string res_path) {
         return platform_initialize_cef(sub_path, res_path);
     });
 
-    m.def("create_browser", [](std::string url, MainHandler::PaintCallback cb, MainHandler::AccelPaintCallback acb, bool shared_texture_enabled, int fps) {
+    m.def("create_browser", [](std::string url, RenderHandler::PaintCallback cb, RenderHandler::AccelPaintCallback acb, bool shared_texture_enabled, int fps) {
         CefWindowInfo window_info;
         window_info.SetAsWindowless(0);
         window_info.shared_texture_enabled = shared_texture_enabled;
         
         CefBrowserSettings settings;
         settings.windowless_frame_rate = fps;
-        g_handler = new MainHandler(cb, acb);
 
-        CefBrowserHost::CreateBrowser(window_info, g_handler, url, settings, nullptr, nullptr);
+        CefRefPtr<RenderHandler> render_handler = new RenderHandler(cb, acb);
+        g_client = new MainClient(render_handler);
+
+        CefBrowserHost::CreateBrowser(window_info, g_client, url, settings, nullptr, nullptr);
     },
     py::arg("url"),
     py::arg("on_cpu_paint") = nullptr,
     py::arg("on_gpu_paint") = nullptr,
-    py::arg("shared_texture_enabled") = true,
+    py::arg("shared_texture_enabled") = false,
     py::arg("fps") = 60
     );
 
+    m.def("load_url", [](std::string url) {
+        if (g_browser && g_browser->GetMainFrame()) {
+            g_browser->GetMainFrame()->LoadURL(CefString(url));
+        }
+    });
+
     m.def("resize", [](int w, int h) {
-        if (g_handler && g_browser) {
-            g_handler->width_ = w;
-            g_handler->height_ = h;
+        if (g_client && g_browser) {
+            g_client->GetCustomRenderHandler()->width_ = w;
+            g_client->GetCustomRenderHandler()->height_ = h;
             g_browser->GetHost()->WasResized();
             g_browser->GetHost()->Invalidate(PET_VIEW);
         }
@@ -47,14 +53,16 @@ PYBIND11_MODULE(pybindcef, m) {
     m.def("do_work", []() {
         CefDoMessageLoopWork(); 
     });
+
     m.def("shutdown", []() {
         if (g_browser && g_browser->GetHost()) {
             g_browser->GetHost()->CloseBrowser(true);
         }
         g_browser = nullptr;
-        g_handler = nullptr;
+        g_client = nullptr;
         CefShutdown(); 
     });
+
     m.def("init_graphics", &init_graphics_bridge);
     m.def("map_gpu_texture", &platform_map_gpu_texture);
     m.def("lock_texture", &lock_texture);
@@ -62,7 +70,6 @@ PYBIND11_MODULE(pybindcef, m) {
 
     m.def("set_focus", [](bool focused) {
         if (!g_browser || !g_browser->GetHost()) return;
-        py::gil_scoped_acquire acquire;
         g_browser->GetHost()->SetFocus(focused);
     });
 
@@ -97,18 +104,14 @@ PYBIND11_MODULE(pybindcef, m) {
     });
 
     m.def("go_back", []() {
-        if (g_browser) {
-            if (g_browser->CanGoBack()) {
-                g_browser->GoBack();
-            }
+        if (g_browser && g_browser->CanGoBack()) {
+            g_browser->GoBack();
         }
     });
 
     m.def("go_forward", []() {
-        if (g_browser) {
-            if (g_browser->CanGoForward()) {
-                g_browser->GoForward();
-            }
+        if (g_browser && g_browser->CanGoForward()) {
+            g_browser->GoForward();
         }
     });
 
