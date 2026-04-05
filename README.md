@@ -166,7 +166,7 @@ PyPI: https://pypi.org/project/pybindcef/
 
 - Windows
 
-    Copy all files under `cef_binary/Resources` and `cef_binary/Release` right next to the extension.
+    Copy all files under `cef_binary/Resources` and `cef_binary/Release` right next to the extension from wherever you are accessing it.
     All you need to do is make `libcef.dll` available in LD_LIBRARY_PATH and place the files under `cef_binary/Resources` next to `libcef.dll` that's it.
 
 ## Tests
@@ -192,6 +192,32 @@ PyPI: https://pypi.org/project/pybindcef/
 3. Tkinter
 
     - Copy `pybindcef` extension and `cef_worker` executable to `pybindcef/tests/tkinter/`.
+    - Run main.py with the python executable version suitable for the extension.
+    ```bash
+    python main.py
+    ```
+
+### Windows
+
+1. Kivy
+
+    - Copy `pybindcef` extension and `cef_worker` executable to `pybindcef/tests/kivy/` while also extracting resources as above instructions.
+    - Run main.py with the python executable version suitable for the extension.
+    ```bash
+    python main.py
+    ```
+
+2. PyQt
+
+    - Copy `pybindcef` extension and `cef_worker` executable to `pybindcef/tests/pyqt/` while also extracting resources as above instructions.
+    - Run main.py with the python executable version suitable for the extension.
+    ```bash
+    python main.py
+    ```
+
+3. Tkinter
+
+    - Copy `pybindcef` extension and `cef_worker` executable to `pybindcef/tests/tkinter/` while also extracting resources as above instructions.
     - Run main.py with the python executable version suitable for the extension.
     ```bash
     python main.py
