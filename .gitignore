@@ -53,4 +53,5 @@ tests/**/locales
 tests/**/*.pak
 *.dat
 *.bin
-.json
+.vscode/
+*.pyd
