@@ -15,6 +15,7 @@ from kivy.graphics.texture import Texture
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy import platform
+from kivy.lang import Builder
 
 
 class CefBrowser(Widget):
@@ -28,22 +29,21 @@ class CefBrowser(Widget):
         self.current_handle = 0
         self.tex = Texture.create(size=(800, 600), colorfmt='bgra')
 
-        with self.canvas:
+        with self.canvas.after:
             Color(1, 1, 1, 1)
             PushMatrix()
             self.translate = Translate(0, 600)
             self.scale = Scale(1, -1, 1)
 
-            Callback(self._lock_gpu)
             self.rect = Rectangle(texture=self.tex, pos=self.pos, size=(800, 600))
-            Callback(self._unlock_gpu)
             PopMatrix()
 
         self.bind(pos=self.update_rect, size=self.update_rect)
 
-        pybindcef.create_browser("https:/youtube.com", self.on_paint, self.on_gpu_paint, False, 60)
+        pybindcef.create_browser("https:/google.com", self.on_cpu_paint, self.on_gpu_paint, False, 60)
 
         Clock.schedule_interval(self.update_cef, 0)
+        Clock.schedule_once(lambda dt: pybindcef.load_url("https://google.com"))
 
         Clock.schedule_once(lambda dt: pybindcef.set_focus(True), 1.0)
 
@@ -56,9 +56,8 @@ class CefBrowser(Widget):
     def _on_keyboard_down(self, window, key, scancode, codepoint, modifiers):
 
         pybindcef.send_key_event(key, 0, 0)
-
         if codepoint:
-            pybindcef.send_key_event(ord(codepoint), 0, 2) # 2 = CHAR
+            pybindcef.send_key_event(ord(codepoint), 0, 2)
             
         return True
 
@@ -71,19 +70,16 @@ class CefBrowser(Widget):
             pybindcef.set_focus(True)
             self._dispatch(touch.x, touch.y, 0, False)
             self._dispatch(touch.x, touch.y, 1, False)
-            return True
 
     def on_ceftouch_move(self, instance, pos):
         if self.collide_point(*pos):
             pybindcef.set_focus(True)
             self._dispatch(pos[0], pos[1], 0, False)
-            return True
 
     def on_ceftouch_up(self, instance, touch):
         if self.collide_point(*touch.pos):
             pybindcef.set_focus(True)
             self._dispatch(touch.x, touch.y, 1, True)
-            return True
 
     def _dispatch(self, x, y, event_type, is_up):
         cef_x = int(x - self.x)
@@ -112,7 +108,7 @@ class CefBrowser(Widget):
         if self.mapped:
             pybindcef.unlock_texture()
 
-    def on_paint(self, buffer_view, width, height):
+    def on_cpu_paint(self, buffer_view, width, height):
         try:
             if self.tex.width != width or self.tex.height != height:
                 self.tex = Texture.create(size=(width, height), colorfmt='bgra')
@@ -127,6 +123,24 @@ class CefBrowser(Widget):
     def update_cef(self, dt):
         pybindcef.do_work()
 
+    def go_back(self):
+        pybindcef.go_back()
+
+app_kv = """
+Screen:
+
+    BoxLayout:
+        orientation: "vertical"
+        size_hint: [1, 1]
+
+        BoxLayout:
+            size_hint: 1, None
+            height: self.minimum_height
+
+        CefBrowser:
+            id: browser
+            size_hint: 1, 1
+"""
 
 class MainApp(App):
     def build(self):
@@ -138,11 +152,7 @@ class MainApp(App):
         res_dir = os.path.join(base, "Resources")
 
         pybindcef.initialize(worker_exe, res_dir)
-        
-        browser = CefBrowser()
-        Clock.schedule_once(lambda dt: pybindcef.init_graphics(), 0)
-        
-        return browser
+        return Builder.load_string(app_kv)
 
     def on_pause(self):
         pybindcef.shutdown()
