@@ -41,7 +41,7 @@ class CefBrowser(Widget):
 
         self.bind(pos=self.update_rect, size=self.update_rect)
 
-        pybindcef.create_browser("https://youtu.be/QDia3e12czc?si=oTKjnrpa_gXZ4mO-", self.on_paint, self.on_gpu_paint, False, 60)
+        pybindcef.create_browser("https:/google.com", self.on_paint, self.on_gpu_paint, False, 60)
 
         Clock.schedule_interval(self.update_cef, 0)
 

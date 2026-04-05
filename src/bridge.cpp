@@ -44,18 +44,26 @@ PYBIND11_MODULE(pybindcef, m) {
         }
     });
 
-    m.def("do_work", []() { CefDoMessageLoopWork(); });
-    m.def("shutdown", []() { CefShutdown(); });
+    m.def("do_work", []() {
+        CefDoMessageLoopWork(); 
+    });
+    m.def("shutdown", []() {
+        if (g_browser && g_browser->GetHost()) {
+            g_browser->GetHost()->CloseBrowser(true);
+        }
+        g_browser = nullptr;
+        g_handler = nullptr;
+        CefShutdown(); 
+    });
     m.def("init_graphics", &init_graphics_bridge);
     m.def("map_gpu_texture", &platform_map_gpu_texture);
     m.def("lock_texture", &lock_texture);
     m.def("unlock_texture", &unlock_texture);
 
     m.def("set_focus", [](bool focused) {
+        if (!g_browser || !g_browser->GetHost()) return;
         py::gil_scoped_acquire acquire;
-        if (g_browser && g_browser->GetHost()) {
-            g_browser->GetHost()->SetFocus(focused);
-        }
+        g_browser->GetHost()->SetFocus(focused);
     });
 
     m.def("send_mouse_event", [](int x, int y, int event_type, bool is_up) {
