@@ -73,7 +73,7 @@ PYBIND11_MODULE(pybindcef, m) {
         g_browser->GetHost()->SetFocus(focused);
     });
 
-    m.def("send_mouse_event", [](int x, int y, int event_type, bool is_up) {
+    m.def("send_mouse_event", [](int x, int y, int event_type, bool is_up, int button_type) {
         if (!g_browser || !g_browser->GetHost()) return;
 
         CefMouseEvent mouse_event;
@@ -84,7 +84,9 @@ PYBIND11_MODULE(pybindcef, m) {
         if (event_type == 0) {
             g_browser->GetHost()->SendMouseMoveEvent(mouse_event, false);
         } else {
-            g_browser->GetHost()->SendMouseClickEvent(mouse_event, MBT_LEFT, is_up, 1);
+            cef_mouse_button_type_t cef_button = static_cast<cef_mouse_button_type_t>(button_type);
+            
+            g_browser->GetHost()->SendMouseClickEvent(mouse_event, cef_button, is_up, 1);
         }
     });
 

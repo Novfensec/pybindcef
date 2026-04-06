@@ -6,6 +6,7 @@ from kivy.config import Config
 Config.set('graphics', 'width', '1200')
 Config.set('graphics', 'maxfps', '60')
 Config.set('graphics', 'height', '800')
+Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
 from kivy.app import App
 from kivy.uix.widget import Widget
@@ -45,46 +46,77 @@ class CefBrowser(Widget):
         Clock.schedule_interval(self.update_cef, 0)
         Clock.schedule_once(lambda dt: pybindcef.load_url("https://google.com"))
 
-        Clock.schedule_once(lambda dt: pybindcef.set_focus(True), 1.0)
+        # Clock.schedule_once(lambda dt: pybindcef.set_focus(True), 1.0)
 
         Window.bind(on_touch_down=self.on_ceftouch_down)
-        Window.bind(mouse_pos=self.on_ceftouch_move)
+        Window.bind(mouse_pos=self.on_cefmouse_move)
         Window.bind(on_touch_up=self.on_ceftouch_up)
         Window.bind(on_key_down=self._on_keyboard_down)
         Window.bind(on_key_up=self._on_keyboard_up)
 
     def _on_keyboard_down(self, window, key, scancode, codepoint, modifiers):
+        print(window, key, scancode, codepoint, modifiers)
 
         pybindcef.send_key_event(key, 0, 0)
         if codepoint:
             pybindcef.send_key_event(ord(codepoint), 0, 2)
-            
+
         return True
 
     def _on_keyboard_up(self, window, key, scancode):
+        print(window, key, scancode)
         pybindcef.send_key_event(key, 0, 1)
         return True
 
     def on_ceftouch_down(self, instance, touch):
-        if self.collide_point(*touch.pos):
-            pybindcef.set_focus(True)
-            self._dispatch(touch.x, touch.y, 0, False)
-            self._dispatch(touch.x, touch.y, 1, False)
+        if not self.collide_point(*touch.pos):
+            return False
 
-    def on_ceftouch_move(self, instance, pos):
+        pybindcef.set_focus(True)
+
+        if 'scroll' in touch.button:
+            self._dispatch_wheel(touch.x, touch.y, touch.button)
+            return True 
+
+        button_map = {'left': 0, 'middle': 1, 'right': 2}
+        button = button_map.get(touch.button, 0)
+        self._dispatch(touch.x, touch.y, 1, False, button)
+
+        touch.grab(self)
+        return True
+
+    def _dispatch_wheel(self, x, y, button):
+        cef_x = int(x - self.x)
+        cef_y = int(self.height - (y - self.y))
+
+        step = 120
+
+        dx, dy = 0, 0
+        if button == 'scrollup':    dy = -step
+        elif button == 'scrolldown': dy = step
+        elif button == 'scrollleft':  dx = step
+        elif button == 'scrollright': dx = -step
+
+        pybindcef.send_mouse_wheel(cef_x, cef_y, dx, dy)
+
+    def on_cefmouse_move(self, instance, pos):
         if self.collide_point(*pos):
-            pybindcef.set_focus(True)
-            self._dispatch(pos[0], pos[1], 0, False)
+            self._dispatch(pos[0], pos[1], 0, False, 0)
+            return True
 
     def on_ceftouch_up(self, instance, touch):
         if self.collide_point(*touch.pos):
-            pybindcef.set_focus(True)
-            self._dispatch(touch.x, touch.y, 1, True)
+            button_map = {'left': 0, 'middle': 1, 'right': 2}
+            button = button_map.get(touch.button, 0)
+            
+            self._dispatch(touch.x, touch.y, 1, True, button)
+            touch.ungrab(self)
+            return True
 
-    def _dispatch(self, x, y, event_type, is_up):
+    def _dispatch(self, x, y, event_type, is_up, button_type):
         cef_x = int(x - self.x)
         cef_y = int(self.height - (y - self.y))
-        pybindcef.send_mouse_event(cef_x, cef_y, event_type, is_up)
+        pybindcef.send_mouse_event(cef_x, cef_y, event_type, is_up, button_type)
 
     def update_rect(self, *args):
         pybindcef.resize(int(self.size[0]), int(self.size[1]))
