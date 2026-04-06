@@ -37,6 +37,7 @@ set(SOURCES
     src/main_client.cpp
     src/handlers/lifespan_handler.cpp
     src/handlers/render_handler.cpp
+    src/handlers/download_handler.cpp
 )
 
 if(WIN32)
