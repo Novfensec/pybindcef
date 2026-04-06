@@ -3,9 +3,9 @@ import sys
 import pybindcef
 from kivy.config import Config
 
-Config.set('graphics', 'width', '800')
+Config.set('graphics', 'width', '1200')
 Config.set('graphics', 'maxfps', '60')
-Config.set('graphics', 'height', '600')
+Config.set('graphics', 'height', '800')
 
 from kivy.app import App
 from kivy.uix.widget import Widget
