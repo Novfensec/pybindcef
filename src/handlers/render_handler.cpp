@@ -14,12 +14,8 @@ void RenderHandler::OnPaint(CefRefPtr<CefBrowser> browser, PaintElementType type
     py::gil_scoped_acquire acquire;
     if (callback_ && buffer) {
         size_t size = static_cast<size_t>(width) * height * 4;
-        auto mview = py::memoryview::from_memory(
-            const_cast<void*>(buffer), 
-            static_cast<ssize_t>(size), 
-            false
-        );
-        callback_(mview, width, height);
+        py::bytes data(static_cast<const char*>(buffer), size);
+        callback_(data, width, height);
     }
 }
 

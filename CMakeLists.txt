@@ -64,10 +64,6 @@ if(WIN32)
         d3d11.lib
         opengl32.lib
     )
-    add_custom_command(TARGET pybindcef POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CEF_ROOT}/Release/libcef.dll $<TARGET_FILE_DIR:pybindcef>
-    )
     set_property(TARGET pybindcef PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded")
 else()
     target_link_libraries(pybindcef PRIVATE
