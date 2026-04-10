@@ -1,3 +1,5 @@
+// pure AI shit I even don't know anything about handling shared textures on gpu, all I knew was to get a frame buffer and push to gpu, whoever is good at utilizing shared texture please take control!!!
+
 #include "common/gpu_mapper.h"
 #include <windows.h>
 #include <d3d11.h>
