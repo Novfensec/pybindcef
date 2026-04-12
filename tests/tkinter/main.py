@@ -1,8 +1,11 @@
-import tkinter as tk
-from PIL import Image, ImageTk
-import pybindcef
 import os
 import platform
+import sys
+
+import tkinter as tk
+from PIL import Image, ImageTk
+
+import pybindcef
 
 class TkCefBrowser:
     def __init__(self, root, url="https://youtube.com"):
@@ -17,7 +20,7 @@ class TkCefBrowser:
 
         self.canvas = tk.Canvas(root, width=1200, height=800, bg="black", highlightthickness=0)
         self.canvas.pack(fill=tk.BOTH, expand=True)
-        
+
         self.photo = None
         self.image_id = None 
 
@@ -54,14 +57,16 @@ class TkCefBrowser:
 
     def on_key_press(self, event):
         vk = self._get_vk_code(event)
-        pybindcef.send_key_event(vk, 0, 0)
+        native = 0 if sys.platform.startswith("linux") else vk
+        pybindcef.send_key_event(vk, native, 0, 0)
         if event.char:
-            pybindcef.send_key_event(ord(event.char), 0, 2)
+            pybindcef.send_key_event(ord(event.char), native, 0, 2)
         return "break"
 
     def on_key_release(self, event):
         vk = self._get_vk_code(event)
-        pybindcef.send_key_event(vk, 0, 1)
+        native = 0 if sys.platform.startswith("linux") else vk
+        pybindcef.send_key_event(vk, native, 0, 1)
         return "break"
 
     def on_mouse_move(self, event):
@@ -79,7 +84,7 @@ class TkCefBrowser:
     def on_paint(self, buffer, width, height):
         img = Image.frombytes("RGBA", (width, height), buffer, "raw", "BGRA")
         self.photo = ImageTk.PhotoImage(image=img)
-        
+
         if self.image_id is None:
             self.image_id = self.canvas.create_image(0, 0, image=self.photo, anchor=tk.NW)
         else:
@@ -96,10 +101,10 @@ class TkCefBrowser:
 if __name__ == "__main__":
     root = tk.Tk()
     browser = TkCefBrowser(root)
-    
+
     def shutdown():
         pybindcef.shutdown()
         root.destroy()
-        
+
     root.protocol("WM_DELETE_WINDOW", shutdown)
     root.mainloop()

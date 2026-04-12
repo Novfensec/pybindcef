@@ -1,8 +1,6 @@
 import os
 import sys
 
-sys.path.insert(0, r"C:\Users\karta\Desktop\computer.nx\pybindcef\pybindcef")
-
 import pybindcef
 from kivy.config import Config
 
@@ -14,7 +12,7 @@ Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.properties import ObjectProperty
-from kivy.graphics import Rectangle, Color, Callback, PushMatrix, PopMatrix, Scale, Translate
+from kivy.graphics import Rectangle, Color, PushMatrix, PopMatrix, Scale, Translate
 from kivy.graphics.texture import Texture
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -284,9 +282,9 @@ class MainApp(App):
     def build(self):
         base = os.path.dirname(os.path.abspath(__file__))
         if platform == "linux":
-            worker_exe = os.path.join(base, "..", "..", "pybindcef", "cef_worker")
+            worker_exe = os.path.join(base, "cef_worker")
         elif platform == "win":
-            worker_exe = os.path.join(base, "..", "..", "pybindcef", "cef_worker")
+            worker_exe = os.path.join(base, "cef_worker")
         res_dir = os.path.join(base, "Resources")
 
         pybindcef.initialize(worker_exe, res_dir)
