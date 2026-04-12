@@ -5,7 +5,7 @@ import os
 import platform
 
 class TkCefBrowser:
-    def __init__(self, root, url="https://google.com"):
+    def __init__(self, root, url="https://youtube.com"):
         self.root = root
         self.root.title("Tkinter CEF Integrated Browser")
 

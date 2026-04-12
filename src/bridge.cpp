@@ -90,12 +90,12 @@ PYBIND11_MODULE(pybindcef, m) {
         }
     });
 
-    m.def("send_key_event", [](int key_code, uint32_t modifiers, int type) {
+    m.def("send_key_event", [](int key_code, int native_key_code, uint32_t modifiers, int type) {
         if (!g_browser || !g_browser->GetHost()) return;
 
         CefKeyEvent event;
         event.windows_key_code = key_code;
-        event.native_key_code = key_code;
+        event.native_key_code = native_key_code;
         event.modifiers = modifiers;
 
         if (type == 0) event.type = KEYEVENT_RAWKEYDOWN;

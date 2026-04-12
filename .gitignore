@@ -48,9 +48,9 @@ wheelhouse
 dist
 
 .pypirc
-tests/**/Resources
-tests/**/locales
-tests/**/*.pak
+**/Resources
+**/locales
+**/*.pak
 *.dat
 *.bin
 .vscode/
