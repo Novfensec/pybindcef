@@ -1,9 +1,27 @@
 # pybindcef
 High-performance Python bindings for Chromium Embedded Framework (CEF)
 
+**Experimental and it works damn good.**
+
+Video testing: https://youtu.be/yWIah-r6sbw?si=O_uNuDDE8uSf6-Nk
+
+Complete examples of using with Kivy, Tkinter and PyQt6 are under `tests`.
+
 Thanks to [pybind11](https://github.com/pybind/pybind11) and [CEF](https://github.com/chromiumembedded/cef) for existing in this world.
 
+**Currently, if I tell CEF to use a resources dir it doesn't, instead it looks for it in the same dir as `libcef`, I dont know why but it does use the locales dir as I ask it to I think someone more aware of CEF api may take over this current flaw.**
+
+## Financial Support
+If and only if you want to support me anyhow:
+
+[![Donate via](https://img.shields.io/badge/Donate%20via-Wise-9FE870?style=for-the-badge&logo=wise&labelColor=163300)](https://wise.com/pay/business/kartavyashukla)
+
+[![Donate via PayPal](https://img.shields.io/badge/Donate%20via-PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://www.paypal.me/KARTAVYASHUKLA)
+
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/Novfensec?style=for-the-badge&label=Sponsor%20Novfensec&logo=github&color=000000)](https://github.com/sponsors/Novfensec)
+
 ## Build Instructions
+Better watch a video (and there is not a video yet, lol)!!
 
 ### Building `libcef_dll_wrapper`
 
