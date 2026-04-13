@@ -19,7 +19,7 @@ PYBIND11_MODULE(pybindcef, m) {
         CefWindowInfo window_info;
         window_info.SetAsWindowless(0);
         window_info.shared_texture_enabled = shared_texture_enabled;
-        
+
         CefBrowserSettings settings;
         settings.windowless_frame_rate = fps;
 

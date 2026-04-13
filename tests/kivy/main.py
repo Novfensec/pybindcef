@@ -284,7 +284,7 @@ class MainApp(App):
         if platform == "linux":
             worker_exe = os.path.join(base, "cef_worker")
         elif platform == "win":
-            worker_exe = os.path.join(base, "cef_worker")
+            worker_exe = os.path.join(base, "cef_worker.exe")
         res_dir = os.path.join(base, "Resources")
 
         pybindcef.initialize(worker_exe, res_dir)

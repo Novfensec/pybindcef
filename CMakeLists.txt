@@ -35,6 +35,7 @@ include_directories(${CEF_ROOT} src/)
 set(SOURCES 
     src/bridge.cpp
     src/main_client.cpp
+    src/main_app.cpp
     src/handlers/lifespan_handler.cpp
     src/handlers/render_handler.cpp
     src/handlers/download_handler.cpp
