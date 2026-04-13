@@ -9,8 +9,6 @@ Complete examples of using with Kivy, Tkinter and PyQt6 are under `tests`.
 
 Thanks to [pybind11](https://github.com/pybind/pybind11) and [CEF](https://github.com/chromiumembedded/cef) for existing in this world.
 
-**Currently, if I tell CEF to use a resources dir it doesn't, instead it looks for it in the same dir as `libcef`, I dont know why but it does use the locales dir as I ask it to I think someone more aware of CEF api may take over this current flaw.**
-
 ## Financial Support
 If and only if you want to support me anyhow:
 
