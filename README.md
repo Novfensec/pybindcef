@@ -25,7 +25,7 @@ Better watch a video (and there is not a video yet, lol)!!
 
 - Linux
 
-    Download cef minimal build for your system architecture via https://cef-builds.spotifycdn.com
+    Download cef minimal build for your system architecture via https://cef-builds.spotifycdn.com/index.html
 
     ```bash
     mkdir -p ~/Downloads/cef_binary
@@ -55,7 +55,7 @@ Better watch a video (and there is not a video yet, lol)!!
 
 - Windows
 
-    Download cef minimal build for your system architecture via https://cef-builds.spotifycdn.com
+    Download cef minimal build for your system architecture via https://cef-builds.spotifycdn.com/index.html
 
     > **Powershell** commands below
 
