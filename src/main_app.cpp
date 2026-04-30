@@ -9,4 +9,9 @@ void PyCefApp::OnBeforeCommandLineProcessing(const CefString& process_type,
 
     // std::string locales_p = resources_path_ + "/locales";
     // command_line->AppendSwitchWithValue("locales-dir-path", CefString(locales_p));
+
+    // not supporting gpu right now
+    command_line->AppendSwitch("disable-gpu");
+    command_line->AppendSwitch("disable-gpu-compositing");
+    command_line->AppendSwitch("disable-gpu-sandbox");
 }
