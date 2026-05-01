@@ -1,6 +1,16 @@
 import os
 import sys
 
+if os.name == "nt":
+
+    cef_lib_path = r"your libcef.dll path with all resources extracted next to it"
+
+    if cef_lib_path not in os.environ.get('PATH', ''):
+        os.environ['PATH'] = f"{cef_lib_path};{os.environ.get('PATH', '')}"
+
+        if hasattr(os, 'add_dll_directory'):
+            os.add_dll_directory(cef_lib_path)
+
 import pybindcef
 from kivy.config import Config
 
@@ -78,7 +88,6 @@ class CefBrowser(Widget):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._current_modifiers = 0
-        
         self.mapped = False 
         self.current_handle = 0
         self.tex = Texture.create(size=(800, 600), colorfmt='bgra')
@@ -96,7 +105,13 @@ class CefBrowser(Widget):
 
         self.bind(pos=self.update_rect, size=self.update_rect)
 
-        pybindcef.create_browser("https:/google.com", self.on_cpu_paint, self.on_gpu_paint, False, 60)
+        pybindcef.create_browser(
+            url="https:/google.com", 
+            on_cpu_paint=self.on_cpu_paint, 
+            on_gpu_paint=self.on_gpu_paint, 
+            shared_texture_enabled=False, 
+            fps=60
+        )
 
         Clock.schedule_interval(self.update_cef, 0)
         Clock.schedule_once(lambda dt: pybindcef.load_url("https://google.com"))

@@ -1,6 +1,15 @@
 import os
-import platform
 import sys
+
+if os.name == "nt":
+
+    cef_lib_path = r"your libcef.dll path with all resources extracted next to it"
+
+    if cef_lib_path not in os.environ.get('PATH', ''):
+        os.environ['PATH'] = f"{cef_lib_path};{os.environ.get('PATH', '')}"
+
+        if hasattr(os, 'add_dll_directory'):
+            os.add_dll_directory(cef_lib_path)
 
 import tkinter as tk
 from PIL import Image, ImageTk
@@ -13,7 +22,7 @@ class TkCefBrowser:
         self.root.title("Tkinter CEF Integrated Browser")
 
         base = os.path.dirname(os.path.abspath(__file__))
-        ext = ".exe" if platform.system() == "Windows" else ""
+        ext = ".exe" if os.name == "nt" else ""
         worker_exe = os.path.join(base, f"cef_worker{ext}")
         res_dir = os.path.join(base, "Resources")
         pybindcef.initialize(worker_exe, res_dir)
