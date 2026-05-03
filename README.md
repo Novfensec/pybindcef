@@ -55,6 +55,16 @@ Better watch a video (and there is not a video yet, lol)!!
 
 - Windows
 
+    Install the necessary C++ build tools and CMake using Windows Package Manager (`winget`):
+    
+    ```powershell
+    # Install Visual C++ Build Tools
+    winget install Microsoft.VisualStudio.BuildTools
+    
+    # Install CMake
+    winget install Kitware.CMake
+    ```
+
     Download cef minimal build for your system architecture via https://cef-builds.spotifycdn.com/index.html
 
     > **Powershell** commands below
