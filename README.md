@@ -19,7 +19,7 @@ If and only if you want to support me anyhow:
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/Novfensec?style=for-the-badge&label=Sponsor%20Novfensec&logo=github&color=000000)](https://github.com/sponsors/Novfensec)
 
 ## Build Instructions
-Better watch a video (and there is not a video yet, lol)!!
+Better watch a video: https://youtu.be/3ZYGRoq0yno?si=SHUavAi3QQssk8rD
 
 ### Building `libcef_dll_wrapper`
 
