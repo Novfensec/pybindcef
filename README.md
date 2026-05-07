@@ -25,6 +25,26 @@ Better watch a video (and there is not a video yet, lol)!!
 
 - Linux
 
+    Install necessary build tools:
+    ```
+    sudo apt update
+    sudo apt install -y \
+        build-essential \
+        cmake \
+        ninja-build \
+        libnss3-dev \
+        libasound2-dev \
+        libxss-dev \
+        libxtst-dev \
+        libx11-xcb-dev \
+        libxcb-dri3-dev \
+        libdrm-dev \
+        libgbm-dev \
+        libpango1.0-dev \
+        libcairo2-dev \
+        libpci-dev
+    ```
+
     Download cef minimal build for your system architecture via https://cef-builds.spotifycdn.com/index.html
 
     ```bash
