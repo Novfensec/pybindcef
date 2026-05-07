@@ -1,5 +1,16 @@
-import sys
 import os
+import sys
+
+if os.name == "nt":
+
+    cef_lib_path = r"your libcef.dll path with all resources extracted next to it"
+
+    if cef_lib_path not in os.environ.get('PATH', ''):
+        os.environ['PATH'] = f"{cef_lib_path};{os.environ.get('PATH', '')}"
+
+        if hasattr(os, 'add_dll_directory'):
+            os.add_dll_directory(os.path.abspath(cef_lib_path))
+
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel
 from PyQt6.QtCore import QTimer, Qt
 from PyQt6.QtGui import QImage, QPixmap

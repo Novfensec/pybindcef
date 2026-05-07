@@ -9,7 +9,7 @@ if os.name == "nt":
         os.environ['PATH'] = f"{cef_lib_path};{os.environ.get('PATH', '')}"
 
         if hasattr(os, 'add_dll_directory'):
-            os.add_dll_directory(cef_lib_path)
+            os.add_dll_directory(os.path.abspath(cef_lib_path))
 
 import tkinter as tk
 from PIL import Image, ImageTk
@@ -17,7 +17,7 @@ from PIL import Image, ImageTk
 import pybindcef
 
 class TkCefBrowser:
-    def __init__(self, root, url="https://youtube.com"):
+    def __init__(self, root, url="https://google.com"):
         self.root = root
         self.root.title("Tkinter CEF Integrated Browser")
 

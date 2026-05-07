@@ -9,7 +9,7 @@ if os.name == "nt":
         os.environ['PATH'] = f"{cef_lib_path};{os.environ.get('PATH', '')}"
 
         if hasattr(os, 'add_dll_directory'):
-            os.add_dll_directory(cef_lib_path)
+            os.add_dll_directory(os.path.abspath(cef_lib_path))
 
 import pybindcef
 from kivy.config import Config
