@@ -28,21 +28,9 @@ Better watch a video: https://youtu.be/3ZYGRoq0yno?si=SHUavAi3QQssk8rD
     Install necessary build tools:
     ```
     sudo apt update
-    sudo apt install -y \
-        build-essential \
-        cmake \
-        ninja-build \
-        libnss3-dev \
-        libasound2-dev \
-        libxss-dev \
-        libxtst-dev \
-        libx11-xcb-dev \
-        libxcb-dri3-dev \
-        libdrm-dev \
-        libgbm-dev \
-        libpango1.0-dev \
-        libcairo2-dev \
-        libpci-dev
+    sudo apt update
+    sudo apt install -y build-essential cmake ninja-build
+
     ```
 
     Download cef minimal build for your system architecture via https://cef-builds.spotifycdn.com/index.html
