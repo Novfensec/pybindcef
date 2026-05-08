@@ -30,7 +30,6 @@ Better watch a video: https://youtu.be/3ZYGRoq0yno?si=SHUavAi3QQssk8rD
     sudo apt update
     sudo apt update
     sudo apt install -y build-essential cmake ninja-build
-
     ```
 
     Download cef minimal build for your system architecture via https://cef-builds.spotifycdn.com/index.html
