@@ -14,6 +14,10 @@ Inspired from [cefpython](https://github.com/cztomczak/cefpython)
 
 <!-- GitAds-Verify: N1APKAO73QIHMPQPGMQSCVEETCXBNDA7 -->
 
+## GitAds Sponsored
+[![Sponsored by GitAds](https://gitads.dev/v1/ad-serve?source=novfensec/pybindcef@github)](https://gitads.dev/v1/ad-track?source=novfensec/pybindcef@github)
+
+
 ## Financial Support
 If and only if you want to support me anyhow:
 
