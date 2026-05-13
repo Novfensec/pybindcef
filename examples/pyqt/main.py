@@ -3,7 +3,7 @@ import sys
 
 if os.name == "nt":
 
-    cef_lib_path = r"your libcef.dll path with all resources extracted next to it"
+    cef_lib_path = r"your libcef.dll/.so path with all resources extracted next to it"
 
     if cef_lib_path not in os.environ.get('PATH', ''):
         os.environ['PATH'] = f"{cef_lib_path};{os.environ.get('PATH', '')}"

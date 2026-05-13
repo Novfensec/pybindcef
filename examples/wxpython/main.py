@@ -3,7 +3,7 @@ import wx
 from PIL import Image as PILImage
 
 if os.name == "nt":
-    cef_lib_path = os.path.abspath(r"../../pybindcef")
+    cef_lib_path = os.path.abspath(r"your libcef.dll/.so path with all resources extracted next to it")
     if cef_lib_path not in os.environ.get('PATH', ''):
         os.environ['PATH'] = f"{cef_lib_path};{os.environ.get('PATH', '')}"
     if hasattr(os, 'add_dll_directory'):
