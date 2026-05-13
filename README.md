@@ -12,6 +12,8 @@ Thanks to [pybind11](https://github.com/pybind/pybind11) and [CEF](https://githu
 
 Inspired from [cefpython](https://github.com/cztomczak/cefpython)
 
+<!-- GitAds-Verify: N1APKAO73QIHMPQPGMQSCVEETCXBNDA7 -->
+
 ## Financial Support
 If and only if you want to support me anyhow:
 
