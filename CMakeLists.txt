@@ -48,6 +48,12 @@ if(WIN32)
         src/platforms/win/app_win.cpp
         src/platforms/win/gpu_mapper.cpp
     )
+elseif(APPLE AND IOS)
+    message(STATUS "Configuring pybindcef for iOS")
+    list(APPEND SOURCES 
+        src/platforms/ios/app_ios.cpp
+        src/platforms/ios/gpu_mapper.cpp
+    )
 elseif(UNIX AND NOT APPLE AND NOT ANDROID)
     message(STATUS "Configuring pybindcef for Linux")
     list(APPEND SOURCES 
@@ -66,6 +72,26 @@ if(WIN32)
         opengl32.lib
     )
     set_property(TARGET pybindcef PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded")
+elseif(APPLE AND IOS)
+    target_link_libraries(pybindcef PRIVATE
+        ${CEF_DLL_WRAPPER_ROOT}/libcef_dll_wrapper.a
+        "-framework Foundation"
+        "-framework UIKit"
+        "-framework WebKit"
+        "-framework Metal"
+        "-framework MetalKit"
+        "-framework QuartzCore"
+    )
+    # Link CEF framework if available
+    if(EXISTS "${CEF_ROOT}/Release/CefFramework.framework")
+        target_link_libraries(pybindcef PRIVATE
+            "${CEF_ROOT}/Release/CefFramework.framework"
+        )
+    endif()
+    set_target_properties(pybindcef PROPERTIES
+        FRAMEWORK TRUE
+        MACOSX_FRAMEWORK_IDENTIFIER com.pybindcef.ios
+    )
 else()
     target_link_libraries(pybindcef PRIVATE
         ${CEF_DLL_WRAPPER_ROOT}/libcef_dll_wrapper.a

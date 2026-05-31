@@ -17,6 +17,8 @@ message(STATUS "Building worker with CEF_ROOT: ${CEF_ROOT}")
 
 if(WIN32)
     add_executable(cef_worker platforms/win/cef_worker.cpp)
+elseif(APPLE AND IOS)
+    add_executable(cef_worker platforms/ios/cef_worker.cpp)
 else()
     add_executable(cef_worker platforms/linux/cef_worker.cpp)
 endif()
@@ -26,6 +28,10 @@ target_include_directories(cef_worker PRIVATE ${CEF_ROOT})
 if(WIN32)
     target_link_libraries(cef_worker PRIVATE
         ${CEF_ROOT}\\Release\\libcef.lib
+    )
+elseif(APPLE AND IOS)
+    target_link_libraries(cef_worker PRIVATE
+        "-framework Foundation"
     )
 else()
     target_link_libraries(cef_worker PRIVATE
