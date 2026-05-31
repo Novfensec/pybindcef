@@ -366,13 +366,13 @@ package_output() {
     fi
     
     # Generate an iOS-specific CMake toolchain file
-    cat > "${dist_dir}/ios-toolchain.cmake" << 'CMAKE_EOF'
+    cat > "${dist_dir}/ios-toolchain.cmake" << CMAKE_EOF
 # iOS CMake Toolchain for CEF
 # Usage: cmake -DCMAKE_TOOLCHAIN_FILE=ios-toolchain.cmake ..
 
 set(CMAKE_SYSTEM_NAME iOS)
 set(CMAKE_OSX_ARCHITECTURES "arm64")
-set(CMAKE_OSX_DEPLOYMENT_TARGET "15.0" CACHE STRING "Minimum iOS version")
+set(CMAKE_OSX_DEPLOYMENT_TARGET "${MIN_IOS_VERSION}" CACHE STRING "Minimum iOS version")
 set(CMAKE_XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH NO)
 
 # Find iOS SDK
@@ -382,8 +382,8 @@ execute_process(
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fembed-bitcode")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fembed-bitcode")
+set(CMAKE_C_FLAGS "\${CMAKE_C_FLAGS} -fembed-bitcode")
+set(CMAKE_CXX_FLAGS "\${CMAKE_CXX_FLAGS} -fembed-bitcode")
 
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
@@ -393,13 +393,20 @@ CMAKE_EOF
     log_ok "Generated ios-toolchain.cmake"
     
     # Create a summary
+    local build_type_str
+    if [[ "${BUILD_SIMULATOR}" == true ]]; then
+        build_type_str="Simulator"
+    else
+        build_type_str="Device (arm64)"
+    fi
+
     cat > "${dist_dir}/BUILD_INFO.txt" << EOF
 CEF iOS Build Information
 =========================
 CEF Branch: ${CEF_BRANCH}
 Build Date: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
 Min iOS Version: ${MIN_IOS_VERSION}
-Build Type: $(if [[ "${BUILD_SIMULATOR}" == true ]]; then echo "Simulator"; else echo "Device (arm64)"; fi)
+Build Type: ${build_type_str}
 Host: $(uname -a)
 Xcode: $(xcodebuild -version | head -1)
 

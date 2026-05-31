@@ -7,8 +7,9 @@
 // but the underlying implementation differs from desktop platforms.
 
 bool platform_initialize_cef(const std::string& sub_path, const std::string& res_path) {
-    // On iOS, CefMainArgs takes the main function arguments
-    // In practice, these come from UIApplicationMain
+    // On iOS, argc/argv are not meaningful since the app launches via
+    // UIApplicationMain. CEF handles null args gracefully in single-process
+    // mode on iOS where no command-line parsing is performed.
     int argc = 0;
     char** argv = nullptr;
     CefMainArgs args(argc, argv);
