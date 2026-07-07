@@ -126,8 +126,7 @@ class CefBrowser(Widget):
         if not self._cef_focused:
             self._cef_focused = True
             pybindcef.set_focus(True)
-            
-            # Request keyboard from Kivy dynamically
+
             self._keyboard = Window.request_keyboard(self._on_keyboard_closed, self)
             if self._keyboard:
                 self._keyboard.bind(on_key_down=self._on_keyboard_down)
@@ -138,8 +137,7 @@ class CefBrowser(Widget):
         if self._cef_focused:
             self._cef_focused = False
             pybindcef.set_focus(False)
-            
-            # Unbind and release the keyboard cleanly
+
             if self._keyboard:
                 self._keyboard.unbind(on_key_down=self._on_keyboard_down)
                 self._keyboard.unbind(on_key_up=self._on_keyboard_up)
@@ -167,16 +165,13 @@ class CefBrowser(Widget):
         return key
 
     def _on_keyboard_closed(self):
-        # If Kivy forces the keyboard closed, properly unfocus CEF
         self._unfocus_cef()
 
     def _on_text_input(self, window, text):
         """Fires ONLY for printable characters, already correctly shifted."""
-        # Skip if CEF isn't currently focused
         if not self._cef_focused:
             return
-            
-        # Skip if ctrl/alt held — those are shortcuts not chars
+
         if self._current_modifiers & (CEF_CTRL | CEF_ALT):
             return
 
@@ -191,13 +186,10 @@ class CefBrowser(Widget):
         mods = self._kivy_mods_to_cef(modifiers)
         self._current_modifiers = mods
 
-        # On Linux pass 0 as native_key — CEF resolves from windows_key_code
-        # On Windows pass vk as native_key
         native = 0 if platform == 'linux' else vk
 
         pybindcef.send_key_event(vk, native, self._current_modifiers, 0)
 
-        # Backspace/Delete/Enter etc. need an explicit CHAR too
         NEEDS_CHAR = {
             8:  8,
             13: 13,
@@ -217,12 +209,10 @@ class CefBrowser(Widget):
         return True
 
     def on_ceftouch_down(self, instance, touch):
-        # If clicked outside CEF bounds, unfocus
         if not self.collide_point(*touch.pos):
             self._unfocus_cef()
             return False
 
-        # If clicked inside CEF bounds, focus
         self._focus_cef()
 
         if 'scroll' in touch.button:
