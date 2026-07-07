@@ -2,8 +2,7 @@ import os
 import sys
 
 if os.name == "nt":
-
-    cef_lib_path = r"your libcef.dll/.so path with all resources extracted next to it"
+    cef_lib_path = r"C:\Users\karta\Desktop\computer.nx\pybindcef\pybindcef"
 
     if cef_lib_path not in os.environ.get('PATH', ''):
         os.environ['PATH'] = f"{cef_lib_path};{os.environ.get('PATH', '')}"
@@ -19,7 +18,7 @@ Config.set('graphics', 'maxfps', '60')
 Config.set('graphics', 'height', '800')
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
-from kivy.app import App
+from carbonkivy.app import CarbonApp
 from kivy.uix.widget import Widget
 from kivy.properties import ObjectProperty
 from kivy.graphics import Rectangle, Color, PushMatrix, PopMatrix, Scale, Translate
@@ -80,7 +79,6 @@ KIVY_TO_VK = {
     96:  192,  # `  → VK_OEM_3
 }
 
-
 class CefBrowser(Widget):
 
     tex = ObjectProperty()
@@ -91,9 +89,11 @@ class CefBrowser(Widget):
         self.mapped = False 
         self.current_handle = 0
         self.tex = Texture.create(size=(800, 600), colorfmt='bgra')
-        self._keyboard = Window.request_keyboard(self._on_keyboard_closed, self)
-        self._keyboard.bind(on_key_down=self._on_keyboard_down)
-        self._keyboard.bind(on_key_up=self._on_keyboard_up)
+        
+        # Track if CEF currently has keyboard focus
+        self._cef_focused = False
+        self._keyboard = None
+
         with self.canvas.after:
             Color(1, 1, 1, 1)
             PushMatrix()
@@ -106,7 +106,7 @@ class CefBrowser(Widget):
         self.bind(pos=self.update_rect, size=self.update_rect)
 
         pybindcef.create_browser(
-            url="https:/google.com", 
+            url="https://google.com", 
             on_cpu_paint=self.on_cpu_paint, 
             on_gpu_paint=self.on_gpu_paint, 
             shared_texture_enabled=False, 
@@ -119,8 +119,32 @@ class CefBrowser(Widget):
         Window.bind(on_touch_down=self.on_ceftouch_down)
         Window.bind(mouse_pos=self.on_cefmouse_move)
         Window.bind(on_touch_up=self.on_ceftouch_up)
-
         Window.bind(on_textinput=self._on_text_input)
+
+    def _focus_cef(self):
+        """Grabs the keyboard and sets CEF focus to True."""
+        if not self._cef_focused:
+            self._cef_focused = True
+            pybindcef.set_focus(True)
+            
+            # Request keyboard from Kivy dynamically
+            self._keyboard = Window.request_keyboard(self._on_keyboard_closed, self)
+            if self._keyboard:
+                self._keyboard.bind(on_key_down=self._on_keyboard_down)
+                self._keyboard.bind(on_key_up=self._on_keyboard_up)
+
+    def _unfocus_cef(self):
+        """Releases the keyboard and sets CEF focus to False."""
+        if self._cef_focused:
+            self._cef_focused = False
+            pybindcef.set_focus(False)
+            
+            # Unbind and release the keyboard cleanly
+            if self._keyboard:
+                self._keyboard.unbind(on_key_down=self._on_keyboard_down)
+                self._keyboard.unbind(on_key_up=self._on_keyboard_up)
+                self._keyboard.release()
+                self._keyboard = None
 
     def _kivy_mods_to_cef(self, modifiers):
         """Convert Kivy modifier string list --> CEF bitmask."""
@@ -143,10 +167,15 @@ class CefBrowser(Widget):
         return key
 
     def _on_keyboard_closed(self):
-        self._keyboard = None
+        # If Kivy forces the keyboard closed, properly unfocus CEF
+        self._unfocus_cef()
 
     def _on_text_input(self, window, text):
         """Fires ONLY for printable characters, already correctly shifted."""
+        # Skip if CEF isn't currently focused
+        if not self._cef_focused:
+            return
+            
         # Skip if ctrl/alt held — those are shortcuts not chars
         if self._current_modifiers & (CEF_CTRL | CEF_ALT):
             return
@@ -163,12 +192,12 @@ class CefBrowser(Widget):
         self._current_modifiers = mods
 
         # On Linux pass 0 as native_key — CEF resolves from windows_key_code
-        # On Windows pass vk as native_key (current behavior)
+        # On Windows pass vk as native_key
         native = 0 if platform == 'linux' else vk
 
         pybindcef.send_key_event(vk, native, self._current_modifiers, 0)
 
-        # Backspace/Delete/Enter etc. need an explicit CHAR too — on_textinput won't fire for these
+        # Backspace/Delete/Enter etc. need an explicit CHAR too
         NEEDS_CHAR = {
             8:  8,
             13: 13,
@@ -188,10 +217,13 @@ class CefBrowser(Widget):
         return True
 
     def on_ceftouch_down(self, instance, touch):
+        # If clicked outside CEF bounds, unfocus
         if not self.collide_point(*touch.pos):
+            self._unfocus_cef()
             return False
 
-        pybindcef.set_focus(True)
+        # If clicked inside CEF bounds, focus
+        self._focus_cef()
 
         if 'scroll' in touch.button:
             self._dispatch_wheel(touch.x, touch.y, touch.button)
@@ -209,9 +241,8 @@ class CefBrowser(Widget):
         cef_y = int(self.height - (y - self.y))
 
         step = 120
-
         dx, dy = 0, 0
-        if button == 'scrollup':    dy = -step
+        if button == 'scrollup':     dy = -step
         elif button == 'scrolldown': dy = step
         elif button == 'scrollleft':  dx = step
         elif button == 'scrollright': dx = -step
@@ -263,7 +294,6 @@ class CefBrowser(Widget):
         try:
             if self.tex.width != width or self.tex.height != height:
                 self.tex = Texture.create(size=(width, height), colorfmt='bgra')
-
                 self.rect.texture = self.tex
 
             self.tex.blit_buffer(buffer_view, colorfmt='bgra', bufferfmt='ubyte')
@@ -277,6 +307,10 @@ class CefBrowser(Widget):
     def go_back(self):
         pybindcef.go_back()
 
+    def load(self, url, *args) -> None:
+        pybindcef.load_url(url)
+
+
 app_kv = """
 Screen:
 
@@ -284,16 +318,40 @@ Screen:
         orientation: "vertical"
         size_hint: [1, 1]
 
-        BoxLayout:
-            size_hint: 1, None
-            height: self.minimum_height
+        CBoxLayout:
+            adaptive: [False, True]
+            padding: [dp(16), dp(24)]
+            spacing: dp(16)
+
+            CButtonGhost:
+                icon: "chevron--left"
+                on_press:
+                    browser.go_back()
+
+            CButtonGhost:
+                icon: "chevron--right"
+
+            CLabelNeutral: 
+                text: "Browser in CarbonKivy"
+                style: "heading_03"
+                pos_hint: {"center_y": 0.5}
+
+            CTextInputLayout:
+                CTextInput:
+                    id: input
+                CTextInputHelperText:
+                    text: "weburl here"
+                CTextInputTrailingIconButton:
+                    icon: "search"
+                    on_press:
+                        browser.load(input.text)
 
         CefBrowser:
             id: browser
             size_hint: 1, 1
 """
 
-class MainApp(App):
+class MainApp(CarbonApp):
     def build(self):
         base = os.path.dirname(os.path.abspath(__file__))
         if platform == "linux":
