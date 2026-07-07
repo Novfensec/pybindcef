@@ -5,11 +5,18 @@ High-performance Python bindings for Chromium Embedded Framework (CEF)
 
 Video testing: https://youtu.be/yWIah-r6sbw?si=O_uNuDDE8uSf6-Nk
 
+> [!NOTE]
 > Complete examples of using with Kivy, Tkinter and PyQt6 are under `tests`.
 
 Thanks to [pybind11](https://github.com/pybind/pybind11) and [CEF](https://github.com/chromiumembedded/cef) for existing in this world.
 
 Inspired from [cefpython](https://github.com/cztomczak/cefpython)
+
+<!-- GitAds-Verify: N1APKAO73QIHMPQPGMQSCVEETCXBNDA7 -->
+
+## GitAds Sponsored
+[![Sponsored by GitAds](https://gitads.dev/v1/ad-serve?source=novfensec/pybindcef@github)](https://gitads.dev/v1/ad-track?source=novfensec/pybindcef@github)
+
 
 ## Financial Support
 If and only if you want to support me anyhow:
