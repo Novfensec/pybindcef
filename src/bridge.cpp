@@ -133,4 +133,10 @@ PYBIND11_MODULE(pybindcef, m) {
             g_browser->Reload();
         }
     });
+
+    m.def("set_zoom_level", [](double zoom_level) {
+        if (g_browser && g_browser->GetHost()) {
+            g_browser->GetHost()->SetZoomLevel(zoom_level);
+        }
+    });
 }
