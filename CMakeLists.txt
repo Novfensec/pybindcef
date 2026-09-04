@@ -39,6 +39,11 @@ set(SOURCES
     src/handlers/lifespan_handler.cpp
     src/handlers/render_handler.cpp
     src/handlers/download_handler.cpp
+    src/handlers/load_handler.cpp
+    src/handlers/display_handler.cpp
+    src/handlers/context_menu_handler.cpp
+    src/handlers/jsdialog_handler.cpp
+    src/handlers/find_handler.cpp
 )
 
 if(WIN32)
