@@ -1,8 +1,8 @@
 #include "platform_utils.h"
 #include "main_app.h"
 
-
-bool platform_initialize_cef(const std::string& sub_path, const std::string& res_path) {
+bool platform_initialize_cef(const std::string &sub_path, const std::string &res_path)
+{
 
     HINSTANCE hInstance = GetModuleHandle(NULL);
     CefMainArgs args(hInstance);

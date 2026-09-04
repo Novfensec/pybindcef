@@ -1,9 +1,10 @@
 #include "platform_utils.h"
 #include "main_app.h"
 
-bool platform_initialize_cef(const std::string& sub_path, const std::string& res_path) {
+bool platform_initialize_cef(const std::string &sub_path, const std::string &res_path)
+{
     int argc = 0;
-    char** argv = nullptr;
+    char **argv = nullptr;
     CefMainArgs args(argc, argv);
 
     CefSettings settings;
