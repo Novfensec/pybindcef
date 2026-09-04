@@ -1,305 +1,25 @@
 import os
-import sys
 
 if os.name == "nt":
     cef_lib_path = r"C:\Users\karta\Desktop\computer.nx\pybindcef\pybindcef"
-
-    if cef_lib_path not in os.environ.get('PATH', ''):
-        os.environ['PATH'] = f"{cef_lib_path};{os.environ.get('PATH', '')}"
-
-        if hasattr(os, 'add_dll_directory'):
+    if cef_lib_path not in os.environ.get("PATH", ""):
+        os.environ["PATH"] = f"{cef_lib_path};{os.environ.get('PATH', '')}"
+        if hasattr(os, "add_dll_directory"):
             os.add_dll_directory(os.path.abspath(cef_lib_path))
 
 import pybindcef
 from kivy.config import Config
 
-Config.set('graphics', 'width', '1200')
-Config.set('graphics', 'maxfps', '60')
-Config.set('graphics', 'height', '800')
-Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
+Config.set("graphics", "width", "1200")
+Config.set("graphics", "height", "800")
+Config.set("graphics", "maxfps", "60")
+Config.set("input", "mouse", "mouse,multitouch_on_demand")
 
 from carbonkivy.app import CarbonApp
-from kivy.uix.widget import Widget
-from kivy.properties import ObjectProperty
-from kivy.graphics import Rectangle, Color, PushMatrix, PopMatrix, Scale, Translate
-from kivy.graphics.texture import Texture
-from kivy.clock import Clock
-from kivy.core.window import Window
-from kivy import platform
 from kivy.lang import Builder
-
-# CEF modifier flag bitmask constants
-CEF_SHIFT   = 1 << 1
-CEF_CTRL    = 1 << 2
-CEF_ALT     = 1 << 3
-CEF_META    = 1 << 7
-
-KIVY_TO_VK = {
-    # Special/control keys
-    8:   8,    # Backspace
-    9:   9,    # Tab
-    13:  13,   # Return
-    27:  27,   # Escape
-    32:  32,   # Space
-    127: 46,   # Delete
-    273: 38,   # Up
-    274: 40,   # Down
-    275: 39,   # Right
-    276: 37,   # Left
-    278: 36,   # Home
-    279: 35,   # End
-    280: 33,   # Page Up
-    281: 34,   # Page Down
-
-    # Function keys
-    282: 112,  # F1
-    283: 113,  # F2
-    284: 114,  # F3
-    285: 115,  # F4
-    286: 116,  # F5
-    287: 117,  # F6
-    288: 118,  # F7
-    289: 119,  # F8
-    290: 120,  # F9
-    291: 121,  # F10
-    292: 122,  # F11
-    293: 123,  # F12
-
-    # !! OEM symbols — these MUST be here or they collide with VK arrow/control codes
-    39:  222,  # '  → VK_OEM_7   (was wrongly returning VK_RIGHT=39)
-    44:  188,  # ,  → VK_OEM_COMMA
-    45:  189,  # -  → VK_OEM_MINUS (was wrongly returning VK_INSERT=45)
-    46:  190,  # .  → VK_OEM_PERIOD (was wrongly returning VK_DELETE=46)
-    47:  191,  # /  → VK_OEM_2
-    59:  186,  # ;  → VK_OEM_1
-    61:  187,  # =  → VK_OEM_PLUS
-    91:  219,  # [  → VK_OEM_4
-    92:  220,  # \  → VK_OEM_5
-    93:  221,  # ]  → VK_OEM_6
-    96:  192,  # `  → VK_OEM_3
-}
-
-class CefBrowser(Widget):
-
-    tex = ObjectProperty()
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self._current_modifiers = 0
-        self.mapped = False 
-        self.current_handle = 0
-        self.tex = Texture.create(size=(800, 600), colorfmt='bgra')
-        
-        # Track if CEF currently has keyboard focus
-        self._cef_focused = False
-        self._keyboard = None
-
-        with self.canvas.after:
-            Color(1, 1, 1, 1)
-            PushMatrix()
-            self.translate = Translate(0, 600)
-            self.scale = Scale(1, -1, 1)
-
-            self.rect = Rectangle(texture=self.tex, pos=self.pos, size=(800, 600))
-            PopMatrix()
-
-        self.bind(pos=self.update_rect, size=self.update_rect)
-
-        pybindcef.create_browser(
-            url="https://google.com", 
-            on_cpu_paint=self.on_cpu_paint, 
-            on_gpu_paint=self.on_gpu_paint, 
-            shared_texture_enabled=False, 
-            fps=60
-        )
-
-        Clock.schedule_interval(self.update_cef, 0)
-        Clock.schedule_once(lambda dt: pybindcef.load_url("https://google.com"))
-
-        Window.bind(on_touch_down=self.on_ceftouch_down)
-        Window.bind(mouse_pos=self.on_cefmouse_move)
-        Window.bind(on_touch_up=self.on_ceftouch_up)
-        Window.bind(on_textinput=self._on_text_input)
-
-    def _focus_cef(self):
-        """Grabs the keyboard and sets CEF focus to True."""
-        if not self._cef_focused:
-            self._cef_focused = True
-            pybindcef.set_focus(True)
-
-            self._keyboard = Window.request_keyboard(self._on_keyboard_closed, self)
-            if self._keyboard:
-                self._keyboard.bind(on_key_down=self._on_keyboard_down)
-                self._keyboard.bind(on_key_up=self._on_keyboard_up)
-
-    def _unfocus_cef(self):
-        """Releases the keyboard and sets CEF focus to False."""
-        if self._cef_focused:
-            self._cef_focused = False
-            pybindcef.set_focus(False)
-
-            if self._keyboard:
-                self._keyboard.unbind(on_key_down=self._on_keyboard_down)
-                self._keyboard.unbind(on_key_up=self._on_keyboard_up)
-                self._keyboard.release()
-                self._keyboard = None
-
-    def _kivy_mods_to_cef(self, modifiers):
-        """Convert Kivy modifier string list --> CEF bitmask."""
-        flags = 0
-        if 'shift'   in modifiers: flags |= CEF_SHIFT
-        if 'ctrl'    in modifiers: flags |= CEF_CTRL
-        if 'alt'     in modifiers: flags |= CEF_ALT
-        if 'meta'    in modifiers: flags |= CEF_META
-        if 'capslock' in modifiers: flags |= (1 << 0)
-        if 'numlock'  in modifiers: flags |= (1 << 8)
-        return flags
-
-    def _kivy_key_to_vk(self, key):
-        """Convert Kivy keycode --> Windows VK code."""
-        if key in KIVY_TO_VK:
-            return KIVY_TO_VK[key]
-        # Letters: Kivy gives lowercase ASCII (a=97), VK needs uppercase (A=65)
-        if 97 <= key <= 122:
-            return key - 32
-        return key
-
-    def _on_keyboard_closed(self):
-        self._unfocus_cef()
-
-    def _on_text_input(self, window, text):
-        """Fires ONLY for printable characters, already correctly shifted."""
-        if not self._cef_focused:
-            return
-
-        if self._current_modifiers & (CEF_CTRL | CEF_ALT):
-            return
-
-        for char in text:
-            code = ord(char)
-            if code >= 32 and code != 127:
-                pybindcef.send_key_event(code, 0, self._current_modifiers, 2)
-
-    def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
-        key  = keycode[0]
-        vk   = self._kivy_key_to_vk(key)
-        mods = self._kivy_mods_to_cef(modifiers)
-        self._current_modifiers = mods
-
-        native = 0 if platform == 'linux' else vk
-
-        pybindcef.send_key_event(vk, native, self._current_modifiers, 0)
-
-        NEEDS_CHAR = {
-            8:  8,
-            13: 13,
-            9:  9,
-            27: 27,
-        }
-        if key in NEEDS_CHAR:
-            pybindcef.send_key_event(NEEDS_CHAR[key], native, mods, 2)
-
-        return True
-
-    def _on_keyboard_up(self, keyboard, keycode):
-        key = keycode[0]
-        vk  = self._kivy_key_to_vk(key)
-        native = 0 if platform == 'linux' else vk
-        pybindcef.send_key_event(vk, native, self._current_modifiers, 1)
-        return True
-
-    def on_ceftouch_down(self, instance, touch):
-        if not self.collide_point(*touch.pos):
-            self._unfocus_cef()
-            return False
-
-        self._focus_cef()
-
-        if 'scroll' in touch.button:
-            self._dispatch_wheel(touch.x, touch.y, touch.button)
-            return True 
-
-        button_map = {'left': 0, 'middle': 1, 'right': 2}
-        button = button_map.get(touch.button, 0)
-        self._dispatch(touch.x, touch.y, 1, False, button)
-
-        touch.grab(self)
-        return True
-
-    def _dispatch_wheel(self, x, y, button):
-        cef_x = int(x - self.x)
-        cef_y = int(self.height - (y - self.y))
-
-        step = 120
-        dx, dy = 0, 0
-        if button == 'scrollup':     dy = -step
-        elif button == 'scrolldown': dy = step
-        elif button == 'scrollleft':  dx = step
-        elif button == 'scrollright': dx = -step
-
-        pybindcef.send_mouse_wheel(cef_x, cef_y, dx, dy)
-
-    def on_cefmouse_move(self, instance, pos):
-        if self.collide_point(*pos):
-            self._dispatch(pos[0], pos[1], 0, False, 0)
-            return True
-
-    def on_ceftouch_up(self, instance, touch):
-        if self.collide_point(*touch.pos):
-            button_map = {'left': 0, 'middle': 1, 'right': 2}
-            button = button_map.get(touch.button, 0)
-            
-            self._dispatch(touch.x, touch.y, 1, True, button)
-            touch.ungrab(self)
-            return True
-
-    def _dispatch(self, x, y, event_type, is_up, button_type):
-        cef_x = int(x - self.x)
-        cef_y = int(self.height - (y - self.y))
-        pybindcef.send_mouse_event(cef_x, cef_y, event_type, is_up, button_type)
-
-    def update_rect(self, *args):
-        pybindcef.resize(int(self.size[0]), int(self.size[1]))
-        self.rect.pos = self.pos
-        self.rect.size = self.size
-        self.translate.y = self.size[1]
-
-    def on_gpu_paint(self, handle_id, width, height):
-        if handle_id != self.current_handle:
-            pybindcef.map_gpu_texture(handle_id, self.tex.id, width, height)
-            self.current_handle = handle_id
-            self.mapped = True
-
-        self.canvas.ask_update()
-
-    def _lock_gpu(self, instruction):
-        if self.mapped:
-            pybindcef.lock_texture()
-            
-    def _unlock_gpu(self, instruction):
-        if self.mapped:
-            pybindcef.unlock_texture()
-
-    def on_cpu_paint(self, buffer_view, width, height):
-        try:
-            if self.tex.width != width or self.tex.height != height:
-                self.tex = Texture.create(size=(width, height), colorfmt='bgra')
-                self.rect.texture = self.tex
-
-            self.tex.blit_buffer(buffer_view, colorfmt='bgra', bufferfmt='ubyte')
-            self.canvas.ask_update()
-        except Exception as e:
-            print(f"Paint Resize Error: {e}")
-
-    def update_cef(self, dt):
-        pybindcef.do_work()
-
-    def go_back(self):
-        pybindcef.go_back()
-
-    def load(self, url, *args) -> None:
-        pybindcef.load_url(url)
-
+from kivy import platform
+from kivy.core.window import Window
+from cef_webview import CefWebView, init_cef  # noqa: E402
 
 app_kv = """
 Screen:
@@ -308,50 +28,155 @@ Screen:
         orientation: "vertical"
         size_hint: [1, 1]
 
+        # ── toolbar ─────────────────────────────────────────────────────────
         CBoxLayout:
             adaptive: [False, True]
-            padding: [dp(16), dp(24)]
-            spacing: dp(16)
+            padding: [dp(16), dp(12)]
+            spacing: dp(8)
 
             CButtonGhost:
+                id: btn_back
                 icon: "chevron--left"
-                on_press:
-                    browser.go_back()
+                on_press: browser.go_back()
 
             CButtonGhost:
+                id: btn_fwd
                 icon: "chevron--right"
+                on_press: browser.go_forward()
 
-            CLabelNeutral: 
-                text: "Browser in CarbonKivy"
-                style: "heading_03"
-                pos_hint: {"center_y": 0.5}
+            CButtonGhost:
+                icon: "renew"
+                on_press: browser.reload()
+
+            CButtonGhost:
+                icon: "close"
+                on_press: browser.stop()
 
             CTextInputLayout:
+                size_hint_x: 1
                 CTextInput:
-                    id: input
+                    id: url_input
+                    text: "https://google.com"
+                    on_text_validate: browser.load(self.text)
+                    multiline: False
                 CTextInputHelperText:
-                    text: "weburl here"
+                    text: "Enter URL and press Enter"
                 CTextInputTrailingIconButton:
                     icon: "search"
-                    on_press:
-                        browser.load(input.text)
+                    on_press: browser.load(url_input.text)
 
-        CefBrowser:
+            CButtonGhost:
+                icon: "search"
+                on_press: browser.find(find_input.text)
+
+            CTextInputLayout:
+                size_hint_x: 0.3
+                CTextInput:
+                    id: find_input
+                    hint_text: "Find in page…"
+                    on_text_validate: browser.find(self.text)
+                    multiline: False
+
+            CButtonGhost:
+                icon: "debug"
+                on_press: browser.open_dev_tools()
+
+        CBoxLayout:
+            adaptive: [False, True]
+            padding: [dp(16), dp(4)]
+            spacing: dp(16)
+
+            CLabelNeutral:
+                id: title_label
+                text: "Browser in CarbonKivy"
+                style: "body_compact_01"
+                pos_hint: {"center_y": 0.5}
+
+            CLabelNeutral:
+                id: loading_label
+                text: ""
+                style: "body_compact_01"
+                pos_hint: {"center_y": 0.5}
+
+        CefWebView:
             id: browser
             size_hint: 1, 1
 """
 
+
+# ---------------------------------------------------------------------------
+# App
+# ---------------------------------------------------------------------------
 class MainApp(CarbonApp):
+
     def build(self):
         base = os.path.dirname(os.path.abspath(__file__))
-        if platform == "linux":
-            worker_exe = os.path.join(base, "cef_worker")
-        elif platform == "win":
-            worker_exe = os.path.join(base, "cef_worker.exe")
-        res_dir = os.path.join(base, "Resources")
 
-        pybindcef.initialize(worker_exe, res_dir)
-        return Builder.load_string(app_kv)
+        worker_exe = os.path.join(
+            base,
+            "cef_worker.exe" if platform == "win" else "cef_worker",
+        )
+        res_dir = os.path.join(base, "Resources")
+        init_cef(worker_exe, res_dir, base_dir=base)
+
+        root = Builder.load_string(app_kv)
+        browser: CefWebView = root.ids.browser
+
+        def on_title(title):
+            root.ids.title_label.text = title
+
+        def on_address(url):
+            root.ids.url_input.text = url
+
+        def on_loading_state(is_loading, can_back, can_fwd):
+            root.ids.loading_label.text = "Loading…" if is_loading else ""
+            root.ids.btn_back.disabled = not can_back
+            root.ids.btn_fwd.disabled = not can_fwd
+
+        def on_load_error(code, text, url):
+            print(f"[CEF] Load error {code} on {url}: {text}")
+
+        def on_popup(url, frame, disposition, user_gesture):
+            browser.load(url)
+
+        def on_before_download(name, url, mime):
+            downloads = os.path.join(os.path.expanduser("~"), "Downloads", name)
+            print(f"[CEF] Downloading → {downloads}")
+            return downloads
+
+        def on_download_updated(path, total, recv, done, canceled):
+            if done:
+                print(f"[CEF] Download complete: {path}")
+            elif canceled:
+                print(f"[CEF] Download canceled: {path}")
+
+        def on_console(level, msg, src, line):
+            labels = {0: "DBG", 1: "INF", 2: "WRN", 3: "ERR"}
+            print(f"[JS {labels.get(level, '?')}] {src}:{line}  {msg}")
+            return False
+
+        def on_find_result(identifier, count, final):
+            if final:
+                root.ids.find_input.hint_text = f"{count} match(es)"
+
+        def on_full_screen_mode_change(mode):
+            if mode:
+                Window.add_widget(browser)
+            else:
+                Window.remove_widget(browser)
+
+        browser._cb_title_change = on_title
+        browser._cb_address_change = on_address
+        browser._cb_loading_state_change = on_loading_state
+        browser._cb_load_error = on_load_error
+        browser._cb_before_popup = on_popup
+        browser._cb_before_download = on_before_download
+        browser._cb_download_updated = on_download_updated
+        browser._cb_console_message = on_console
+        browser._cb_find_result = on_find_result
+        browser._cb_fullscreen_mode_change = on_full_screen_mode_change
+
+        return root
 
     def on_pause(self):
         pybindcef.shutdown()
@@ -359,5 +184,6 @@ class MainApp(CarbonApp):
     def on_stop(self):
         pybindcef.shutdown()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     MainApp().run()
