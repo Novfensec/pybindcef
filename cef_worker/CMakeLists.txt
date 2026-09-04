@@ -33,6 +33,8 @@ else()
     )
     set_target_properties(cef_worker PROPERTIES
         BUILD_RPATH "${CEF_ROOT}/Release"
-        INSTALL_RPATH "${CEF_ROOT}/Release"
+        INSTALL_RPATH "$ORIGIN"
     )
 endif()
+
+install(TARGETS cef_worker DESTINATION .)

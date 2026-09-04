@@ -1,4 +1,4 @@
 #pragma once
 #include <string>
 
-bool platform_initialize_cef(const std::string& sub_path, const std::string& res_path);
+bool platform_initialize_cef(const std::string& sub_path, const std::string& res_path, const std::string& cache_path);

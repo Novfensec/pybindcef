@@ -55,4 +55,6 @@ dist
 *.bin
 .vscode/
 *.pyd
-pybindcef/
+__pycache__/
+*.pyc
+*.pyo
