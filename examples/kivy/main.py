@@ -20,7 +20,6 @@ Screen:
         orientation: "vertical"
         size_hint: [1, 1]
 
-        # ── toolbar ─────────────────────────────────────────────────────────
         CBoxLayout:
             adaptive: [False, True]
             padding: [dp(16), dp(12)]
@@ -86,7 +85,7 @@ Screen:
 
             CLabelNeutral:
                 id: loading_label
-                text: ""
+                text: " "
                 style: "body_compact_01"
                 pos_hint: {"center_y": 0.5}
 
