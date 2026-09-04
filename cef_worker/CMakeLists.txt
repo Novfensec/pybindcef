@@ -37,4 +37,4 @@ else()
     )
 endif()
 
-install(TARGETS cef_worker DESTINATION .)
+install(TARGETS cef_worker DESTINATION ${CEF_DATA_DIR})

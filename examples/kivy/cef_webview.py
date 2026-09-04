@@ -135,18 +135,6 @@ def init_cef(worker_exe, resources_dir, base_dir=None):
     pybindcef.initialize(worker_path, res_path)
 
 
-def setup_windows_dll_path(cef_lib_path):
-    """
-    On Windows, add pybindcef's native DLL directory to PATH /
-    add_dll_directory before importing pybindcef.  Call this BEFORE
-    importing cef_webview if you hit DLL load errors.
-    """
-    if cef_lib_path not in os.environ.get("PATH", ""):
-        os.environ["PATH"] = f"{cef_lib_path};{os.environ.get('PATH', '')}"
-        if hasattr(os, "add_dll_directory"):
-            os.add_dll_directory(os.path.abspath(cef_lib_path))
-
-
 class CefWebView(Widget):
     """
     A Kivy widget that renders a CEF browser instance and forwards

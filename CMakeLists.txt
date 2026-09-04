@@ -86,12 +86,18 @@ endif()
 
 install(TARGETS _pybindcef DESTINATION .)
 
-if(WIN32)
-    install(DIRECTORY ${CEF_ROOT}/Release/ DESTINATION . FILES_MATCHING PATTERN "*.dll" PATTERN "*.bin")
-    install(DIRECTORY ${CEF_ROOT}/Resources/ DESTINATION .)
+if(DEFINED SKBUILD_DATA_DIR)
+    set(CEF_DATA_DIR "${SKBUILD_DATA_DIR}/share/pybindcef")
 else()
-    install(DIRECTORY ${CEF_ROOT}/Release/ DESTINATION . FILES_MATCHING PATTERN "*.so" PATTERN "*.so.*" PATTERN "*.bin")
-    install(DIRECTORY ${CEF_ROOT}/Resources/ DESTINATION .)
+    set(CEF_DATA_DIR "share/pybindcef")
+endif()
+
+if(WIN32)
+    install(DIRECTORY ${CEF_ROOT}/Release/ DESTINATION ${CEF_DATA_DIR} FILES_MATCHING PATTERN "*.dll" PATTERN "*.bin")
+    install(DIRECTORY ${CEF_ROOT}/Resources/ DESTINATION ${CEF_DATA_DIR})
+else()
+    install(DIRECTORY ${CEF_ROOT}/Release/ DESTINATION ${CEF_DATA_DIR} FILES_MATCHING PATTERN "*.so" PATTERN "*.so.*" PATTERN "*.bin")
+    install(DIRECTORY ${CEF_ROOT}/Resources/ DESTINATION ${CEF_DATA_DIR})
 endif()
 
 add_subdirectory(cef_worker)
