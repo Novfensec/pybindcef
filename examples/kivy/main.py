@@ -1,12 +1,4 @@
 import os
-
-if os.name == "nt":
-    cef_lib_path = r"C:\Users\karta\Desktop\computer.nx\pybindcef\pybindcef"
-    if cef_lib_path not in os.environ.get("PATH", ""):
-        os.environ["PATH"] = f"{cef_lib_path};{os.environ.get('PATH', '')}"
-        if hasattr(os, "add_dll_directory"):
-            os.add_dll_directory(os.path.abspath(cef_lib_path))
-
 import pybindcef
 from kivy.config import Config
 
@@ -112,11 +104,8 @@ class MainApp(CarbonApp):
     def build(self):
         base = os.path.dirname(os.path.abspath(__file__))
 
-        worker_exe = os.path.join(
-            base,
-            "cef_worker.exe" if platform == "win" else "cef_worker",
-        )
-        res_dir = os.path.join(base, "Resources")
+        worker_exe = pybindcef.WORKER_EXE
+        res_dir = pybindcef.RESOURCES_DIR
         init_cef(worker_exe, res_dir, base_dir=base)
 
         root = Builder.load_string(app_kv)

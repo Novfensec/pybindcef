@@ -215,7 +215,7 @@ struct BrowserInstance
     void unlock_texture_fn() { ::unlock_texture(); }
 };
 
-PYBIND11_MODULE(pybindcef, m)
+PYBIND11_MODULE(_pybindcef, m)
 {
 
     //
@@ -370,8 +370,9 @@ PYBIND11_MODULE(pybindcef, m)
     // Module-level functions
     //
 
-    m.def("initialize", [](std::string sub_path, std::string res_path)
-          { return platform_initialize_cef(sub_path, res_path); }, py::arg("worker_exe"), py::arg("resources_dir"));
+    m.def(
+        "initialize", [](const std::string &sub_path, const std::string &res_path, const std::string &cache_path = "")
+        { return platform_initialize_cef(sub_path, res_path, cache_path); }, py::arg("worker_exe"), py::arg("resources_dir"), py::arg("cache_path") = "");
 
     m.def("create_browser", [](std::string url, py::object on_cpu_paint, py::object on_gpu_paint, bool shared_texture_enabled, int fps, py::object on_before_popup, py::object on_load_start, py::object on_load_end, py::object on_load_error, py::object on_address_change, py::object on_title_change, py::object on_loading_state_change, py::object on_favicon_url_change, py::object on_console_message, py::object on_before_download, py::object on_download_updated, py::object on_context_menu, py::object on_js_alert, py::object on_js_confirm, py::object on_js_prompt, py::object on_find_result, py::object on_fullscreen_mode_change) -> std::shared_ptr<BrowserInstance>
           {

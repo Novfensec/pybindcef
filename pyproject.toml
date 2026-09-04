@@ -22,3 +22,4 @@ dependencies = []
 [tool.scikit-build]
 cmake.version = ">=3.15"
 wheel.install-dir = "pybindcef"
+wheel.packages = ["src/pybindcef"]

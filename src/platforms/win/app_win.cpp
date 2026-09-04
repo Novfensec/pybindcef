@@ -1,7 +1,7 @@
 #include "platform_utils.h"
 #include "main_app.h"
 
-bool platform_initialize_cef(const std::string &sub_path, const std::string &res_path)
+bool platform_initialize_cef(const std::string &sub_path, const std::string &res_path, const std::string &cache_path)
 {
 
     HINSTANCE hInstance = GetModuleHandle(NULL);
@@ -18,7 +18,10 @@ bool platform_initialize_cef(const std::string &sub_path, const std::string &res
     // std::string locales_p = res_path + "/locales";
     // CefString(&settings.locales_dir_path).FromASCII(locales_p.c_str());
 
-    std::string cache_p = res_path + "/web_cache";
+    std::string cache_p = cache_path.empty() ? (res_path + "/web_cache") : cache_path;
+    if (cache_path == ":memory:") {
+        cache_p = "";
+    }
     CefString(&settings.cache_path).FromASCII(cache_p.c_str());
     CefString(&settings.browser_subprocess_path).FromASCII(sub_path.c_str());
 
