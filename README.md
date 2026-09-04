@@ -211,56 +211,19 @@ PyPI: https://pypi.org/project/pybindcef/
     Copy all files under `cef_binary/Resources` and `cef_binary/Release` right next to the extension from wherever you are accessing it.
     All you need to do is make `libcef.dll` available in LD_LIBRARY_PATH and place the files under `cef_binary/Resources` next to `libcef.dll` that's it.
 
-## Tests
+### Manual Build
 
-### Linux
+If you prefer to build the library manually via `pip`:
 
-1. Kivy
+1. Download the minimal CEF build for your system architecture from [Spotify CEF Builds](https://cef-builds.spotifycdn.com/index.html). Extract it to `~/Downloads/cef_binary` (Linux) or `$env:USERPROFILE\Downloads\cef_binary` (Windows), and compile `libcef_dll_wrapper` using CMake.
+2. Ensure you have `pybind11` and `scikit-build-core` installed.
+3. Run `pip install .` in this directory to build and install the `pybindcef` package into your Python environment. This will automatically package the extension, `cef_worker`, and CEF resources into your Python `site-packages`.
 
-    - Copy `pybindcef` extension and `cef_worker` executable to `pybindcef/tests/kivy/`.
-    - Run main.py with the python executable version suitable for the extension.
-    ```bash
-    python main.py
-    ```
+## Running Examples
 
-2. PyQt
+After building and installing via `pip install .` (or the automated scripts), you can run the examples directly:
+```bash
+python examples/kivy/main.py
+```
+You don't need to copy any resources manually! The python module resolves the bundled CEF dependencies internally.
 
-    - Copy `pybindcef` extension and `cef_worker` executable to `pybindcef/tests/pyqt/`.
-    - Run main.py with the python executable version suitable for the extension.
-    ```bash
-    python main.py
-    ```
-
-3. Tkinter
-
-    - Copy `pybindcef` extension and `cef_worker` executable to `pybindcef/tests/tkinter/`.
-    - Run main.py with the python executable version suitable for the extension.
-    ```bash
-    python main.py
-    ```
-
-### Windows
-
-1. Kivy
-
-    - Copy `pybindcef` extension and `cef_worker` executable to `pybindcef/tests/kivy/` while also extracting resources as above instructions.
-    - Run main.py with the python executable version suitable for the extension.
-    ```bash
-    python main.py
-    ```
-
-2. PyQt
-
-    - Copy `pybindcef` extension and `cef_worker` executable to `pybindcef/tests/pyqt/` while also extracting resources as above instructions.
-    - Run main.py with the python executable version suitable for the extension.
-    ```bash
-    python main.py
-    ```
-
-3. Tkinter
-
-    - Copy `pybindcef` extension and `cef_worker` executable to `pybindcef/tests/tkinter/` while also extracting resources as above instructions.
-    - Run main.py with the python executable version suitable for the extension.
-    ```bash
-    python main.py
-    ```
