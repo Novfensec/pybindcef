@@ -1,24 +1,27 @@
 #pragma once
 #include "include/cef_render_handler.h"
-#include <pybind11/pybind11.h>
-#include <functional>
+#include "common/browser_callbacks.h"
 
-namespace py = pybind11;
+/*
+# RenderHandler
 
+Handles CEF paint callbacks (both software CPU and GPU accelerated paths).
+Dispatches into Python via BrowserCallbacks::on_cpu_paint /
+BrowserCallbacks::on_gpu_paint.
+*/
 class RenderHandler : public CefRenderHandler {
 public:
-    int width_ = 800;
+    int width_  = 800;
     int height_ = 600;
 
-    using PaintCallback = std::function<void(py::object, int, int)>;
-    using AccelPaintCallback = std::function<void(uint64_t, int, int)>;
-
-    RenderHandler(PaintCallback cb, AccelPaintCallback acb);
+    explicit RenderHandler(BrowserCallbacks* cb);
 
     void GetViewRect(CefRefPtr<CefBrowser> browser, CefRect& rect) override;
 
-    void OnPaint(CefRefPtr<CefBrowser> browser, PaintElementType type,
-                 const RectList& dirtyRects, const void* buffer,
+    void OnPaint(CefRefPtr<CefBrowser> browser,
+                 PaintElementType type,
+                 const RectList& dirtyRects,
+                 const void* buffer,
                  int width, int height) override;
 
     void OnAcceleratedPaint(CefRefPtr<CefBrowser> browser,
@@ -29,6 +32,5 @@ public:
     IMPLEMENT_REFCOUNTING(RenderHandler);
 
 private:
-    PaintCallback callback_;
-    AccelPaintCallback accel_callback_;
+    BrowserCallbacks* cb_;
 };
