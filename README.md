@@ -30,6 +30,12 @@ Inspired from [cefpython](https://github.com/cztomczak/cefpython)
 
 Build and Install using automated build scripts.
 
+Clone the repo locally:
+```sh
+git clone https://github.com/Novfensec/pybindcef -b main --single-branch --depth 1
+cd pybindcef
+```
+
 - Linux:
     ```sh
     chmod +x ./build.sh
