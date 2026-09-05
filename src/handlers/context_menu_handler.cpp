@@ -18,7 +18,9 @@ void ContextMenuHandler::OnBeforeContextMenu(CefRefPtr<CefBrowser> browser,
         params->GetXCoord(),
         params->GetYCoord(),
         params->GetLinkUrl().ToString(),
-        params->GetSelectionText().ToString());
+        params->GetSelectionText().ToString(),
+        params->GetSourceUrl().ToString(),
+        params->GetMediaType());
 
     if (suppress)
     {

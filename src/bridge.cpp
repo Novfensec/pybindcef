@@ -203,6 +203,12 @@ struct BrowserInstance
             browser->GetHost()->CloseBrowser(true);
     }
 
+    void start_download(const std::string &url)
+    {
+        if (browser && browser->GetHost())
+            browser->GetHost()->StartDownload(CefString(url));
+    }
+
     //
     // GPU helpers (delegated to platform layer)
     //
@@ -254,6 +260,7 @@ PYBIND11_MODULE(_pybindcef, m)
         .def("open_dev_tools", &BrowserInstance::open_dev_tools)
         .def("close_dev_tools", &BrowserInstance::close_dev_tools)
         .def("close", &BrowserInstance::close)
+        .def("start_download", &BrowserInstance::start_download, py::arg("url"))
 
         .def("map_gpu_texture", &BrowserInstance::map_gpu_texture,
              py::arg("handle_id"), py::arg("tex_id"), py::arg("w"), py::arg("h"))

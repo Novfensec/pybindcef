@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 #include <string>
+#include <optional>
 #include <pybind11/pybind11.h>
 
 namespace py = pybind11;
@@ -73,8 +74,6 @@ struct BrowserCallbacks {
     args: (suggested_name: str, url: str, mime_type: str)
     Return a non-empty string = absolute path to save the file.
     Return "" = cancel the download.
-    If this callback is not set, the download is auto-accepted with the
-    suggested name (previous default behaviour).
     */
     std::function<std::string(std::string, std::string, std::string)> on_before_download;
 
@@ -87,10 +86,10 @@ struct BrowserCallbacks {
 
     /*
     Called just before the right-click context menu is shown.
-    args: (x: int, y: int, link_url: str, selection_text: str)
+    args: (x: int, y: int, link_url: str, selection_text: str, source_url: str, media_type: int)
     Return True to suppress the native CEF context menu entirely.
     */
-    std::function<bool(int, int, std::string, std::string)> on_context_menu;
+    std::function<bool(int, int, std::string, std::string, std::string, int)> on_context_menu;
 
     // args: (message: str)  — Return True to suppress CEF's native dialog.
     std::function<bool(std::string)> on_js_alert;

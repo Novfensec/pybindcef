@@ -334,7 +334,7 @@ class CefWebView(Widget):
 
     def _dispatch_before_download(self, name, url, mime):
         if self._cb_before_download:
-            return self._cb_before_download(name, url, mime) or ""
+            return self._cb_before_download(name, url, mime)
         return self.on_before_download(name, url, mime)
 
     def _dispatch_download_updated(self, path, total, received, complete, canceled):
@@ -343,10 +343,10 @@ class CefWebView(Widget):
         else:
             self.on_download_updated(path, total, received, complete, canceled)
 
-    def _dispatch_context_menu(self, x, y, link_url, selection_text):
+    def _dispatch_context_menu(self, x, y, link_url, selection_text, source_url, media_type):
         if self._cb_context_menu:
-            return bool(self._cb_context_menu(x, y, link_url, selection_text))
-        return self.on_context_menu(x, y, link_url, selection_text)
+            return bool(self._cb_context_menu(x, y, link_url, selection_text, source_url, media_type))
+        return self.on_context_menu(x, y, link_url, selection_text, source_url, media_type)
 
     def _dispatch_js_alert(self, msg):
         if self._cb_js_alert:
@@ -418,7 +418,8 @@ class CefWebView(Widget):
         """
         Fired before a download starts.
         Return an absolute path string to accept the download at that path.
-        Return "" to cancel.  Default: auto-accepts with the suggested name.
+        Return "" to cancel.
+        If this callback is NOT set or overridden, the native CEF save dialog will show.
         """
         return ""
 
@@ -426,7 +427,7 @@ class CefWebView(Widget):
                              is_complete, is_canceled):
         """Fired during download progress and on completion/cancellation."""
 
-    def on_context_menu(self, x, y, link_url, selection_text):
+    def on_context_menu(self, x, y, link_url, selection_text, source_url, media_type):
         """
         Fired before the right-click context menu is shown.
         Return True to suppress the native menu.

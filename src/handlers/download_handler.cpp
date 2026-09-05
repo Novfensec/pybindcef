@@ -24,6 +24,10 @@ bool DownloadHandler::OnBeforeDownload(CefRefPtr<CefBrowser> browser,
         {
             callback->Continue(CefString(save_path), false);
         }
+        else
+        {
+            callback->Continue(CefString(), false);
+        }
     }
     else
     {

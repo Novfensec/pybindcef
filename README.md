@@ -43,6 +43,15 @@ cd pybindcef
     ```
 
 - Windows (Powershell):
+
+    Install the necessary C++ build tools and CMake using Windows Package Manager (`winget`):
+    > This has to be done only once.
+
+    ```powershell
+    winget install -e --id Microsoft.VisualStudio.BuildTools --override "--passive --wait --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended" --source winget
+    winget install -e --id Kitware.CMake --source winget
+    ```
+
     ```powershell
     powershell -ExecutionPolicy ByPass -c .\build.ps1
     ```
