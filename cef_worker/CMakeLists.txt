@@ -16,7 +16,7 @@ endif()
 message(STATUS "Building worker with CEF_ROOT: ${CEF_ROOT}")
 
 if(WIN32)
-    add_executable(cef_worker platforms/win/cef_worker.cpp)
+    add_executable(cef_worker WIN32 platforms/win/cef_worker.cpp)
 else()
     add_executable(cef_worker platforms/linux/cef_worker.cpp)
 endif()
