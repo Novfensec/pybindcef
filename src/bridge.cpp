@@ -201,6 +201,7 @@ struct BrowserInstance
     {
         if (browser && browser->GetHost())
             browser->GetHost()->CloseBrowser(true);
+        browser = nullptr;
     }
 
     void start_download(const std::string &url)
