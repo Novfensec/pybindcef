@@ -33,8 +33,5 @@ if (-not (Test-Path "$CEF_DIR\build\libcef_dll_wrapper\Release\libcef_dll_wrappe
     Write-Host "[*] CEF Wrapper already built."
 }
 
-Write-Host "[*] Building and installing pybindcef python package..."
-pip install .
 
-Write-Host "=== Build & Installation Complete ==="
-Write-Host "You can now 'import pybindcef' in your Python scripts!"
+Write-Host "=== Build Complete ==="

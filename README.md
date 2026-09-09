@@ -40,6 +40,7 @@ cd pybindcef
     ```sh
     chmod +x ./build.sh
     ./build.sh
+    pip install .
     ```
 
 - Windows (Powershell):
@@ -52,8 +53,14 @@ cd pybindcef
     winget install -e --id Kitware.CMake --source winget
     ```
 
+    - Run the build script in powershell:
     ```powershell
     powershell -ExecutionPolicy ByPass -c .\build.ps1
+    ```
+
+    - Then simply install via pip:
+    ```powershell
+    pip install .
     ```
 
 ## Manual Build Instructions

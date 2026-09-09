@@ -31,8 +31,4 @@ else
     echo "[*] CEF Wrapper already built."
 fi
 
-echo "[*] Building and installing pybindcef python package..."
-pip install .
-
-echo "=== Build & Installation Complete ==="
-echo "You can now 'import pybindcef' in your Python scripts!"
+echo "=== Build Complete ==="
