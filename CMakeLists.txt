@@ -78,14 +78,21 @@ else()
         ${CEF_DLL_WRAPPER_ROOT}/libcef_dll_wrapper.a
         ${CEF_ROOT}/Release/libcef.so
     )
+    set_target_properties(_pybindcef PROPERTIES
+        INSTALL_RPATH "$ORIGIN/../pybindcef.libs"
+    )
 endif()
 
 install(TARGETS _pybindcef DESTINATION .)
 
-if(DEFINED SKBUILD_DATA_DIR)
-    set(CEF_DATA_DIR "${SKBUILD_DATA_DIR}/share/pybindcef")
+if(WIN32)
+    if(DEFINED SKBUILD_DATA_DIR)
+        set(CEF_DATA_DIR "${SKBUILD_DATA_DIR}/share/pybindcef")
+    else()
+        set(CEF_DATA_DIR "share/pybindcef")
+    endif()
 else()
-    set(CEF_DATA_DIR "share/pybindcef")
+    set(CEF_DATA_DIR "../pybindcef.libs")
 endif()
 
 if(WIN32)
