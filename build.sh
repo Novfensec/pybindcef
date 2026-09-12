@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-CEF_VERSION="151.3.24%2Bg2384915%2Bchromium-151.0.7922.174_linux64"
+CEF_VERSION="151.3.24%2Bg2384915%2Bchromium-151.0.7922.174_linux64_minimal"
 CEF_URL="https://cef-builds.spotifycdn.com/cef_binary_${CEF_VERSION}.tar.bz2"
 CEF_DIR="$HOME/Downloads/cef_binary"
 CEF_ARCHIVE="$HOME/Downloads/cef_binary.tar.bz2"
@@ -25,7 +25,7 @@ if [ ! -f "$CEF_DIR/build/libcef_dll_wrapper/libcef_dll_wrapper.a" ]; then
     mkdir -p "$CEF_DIR/build"
     cd "$CEF_DIR/build"
     cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_POSITION_INDEPENDENT_CODE=ON
-    make -j$(nproc)
+    make -j$(nproc) libcef_dll_wrapper
     cd -
 else
     echo "[*] CEF Wrapper already built."

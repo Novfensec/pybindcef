@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-$CEF_VERSION = "151.3.24%2Bg2384915%2Bchromium-151.0.7922.174_windows64"
+$CEF_VERSION = "151.3.24%2Bg2384915%2Bchromium-151.0.7922.174_windows64_minimal"
 $CEF_URL = "https://cef-builds.spotifycdn.com/cef_binary_$CEF_VERSION.tar.bz2"
 $CEF_DIR = "$env:USERPROFILE\Downloads\cef_binary"
 $CEF_ARCHIVE = "$env:USERPROFILE\Downloads\cef_binary.tar.bz2"
@@ -27,7 +27,7 @@ if (-not (Test-Path "$CEF_DIR\build\libcef_dll_wrapper\Release\libcef_dll_wrappe
     New-Item -ItemType Directory -Force -Path "$CEF_DIR\build" | Out-Null
     Push-Location "$CEF_DIR\build"
     cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_POSITION_INDEPENDENT_CODE=ON
-    cmake --build . --config Release --parallel
+    cmake --build . --config Release --target libcef_dll_wrapper --parallel
     Pop-Location
 } else {
     Write-Host "[*] CEF Wrapper already built."
