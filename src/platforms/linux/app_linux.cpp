@@ -3,8 +3,11 @@
 
 bool platform_initialize_cef(const std::string &sub_path, const std::string &res_path, const std::string &cache_path)
 {
-    int argc = 1;
-    char *argv[] = {(char *)"pybindcef"};
+    std::string res_arg = "--resources-dir-path=" + res_path;
+    std::string loc_arg = "--locales-dir-path=" + res_path + "/locales";
+
+    int argc = 3;
+    char *argv[] = {(char *)"pybindcef", (char *)res_arg.c_str(), (char *)loc_arg.c_str()};
     CefMainArgs args(argc, argv);
 
     CefSettings settings;
@@ -13,10 +16,8 @@ bool platform_initialize_cef(const std::string &sub_path, const std::string &res
     settings.external_message_pump = false;
     settings.multi_threaded_message_loop = false;
 
-    // This doesn't work. https://github.com/chromiumembedded/cef/issues/3749
-    // CefString(&settings.resources_dir_path).FromASCII(res_path.c_str());
-    // std::string locales_p = res_path + "/locales";
-    // CefString(&settings.locales_dir_path).FromASCII(locales_p.c_str());
+    // This doesn't work via CefSettings on Linux due to bug: https://github.com/chromiumembedded/cef/issues/3749
+    // Implemented workaround by passing --resources-dir-path and --locales-dir-path via command-line args above.
 
     std::string cache_p = cache_path.empty() ? (res_path + "/web_cache") : cache_path;
     if (cache_path == ":memory:") {
