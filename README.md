@@ -98,13 +98,13 @@ Better watch a video:
     cd ~/Downloads/cef_binary/build
 
     cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_POSITION_INDEPENDENT_CODE=ON
-    make -j$(nproc)
+    make -j$(nproc) libcef_dll_wrapper
     ```
 
     Confirm the build
 
     ```
-    ls ~/Downloads/cef_binary/build/libcef_dll_wrapper/Release
+    ls ~/Downloads/cef_binary/build/libcef_dll_wrapper
     ```
 
     A file named `libcef_dll_wrapper.a` will be listed.
@@ -146,7 +146,7 @@ Better watch a video:
     vcvarsall.bat amd64
 
     cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_POSITION_INDEPENDENT_CODE=ON
-    cmake --build . --config Release --parallel
+    cmake --build . --config Release --target libcef_dll_wrapper --parallel
     ```
 
     Confirm the build

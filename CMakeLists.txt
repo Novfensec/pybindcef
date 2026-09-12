@@ -28,7 +28,7 @@ file(TO_CMAKE_PATH "${CEF_DLL_WRAPPER_ROOT}" CEF_DLL_WRAPPER_ROOT)
 message(STATUS "CEF_ROOT: ${CEF_ROOT}")
 message(STATUS "CEF_DLL_WRAPPER_ROOT: ${CEF_DLL_WRAPPER_ROOT}")
 
-find_package(Python COMPONENTS Interpreter Development REQUIRED)
+find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
 set(PYBIND11_FINDPYTHON ON)
 find_package(pybind11 REQUIRED)
 
@@ -77,10 +77,6 @@ else()
     target_link_libraries(_pybindcef PRIVATE
         ${CEF_DLL_WRAPPER_ROOT}/libcef_dll_wrapper.a
         ${CEF_ROOT}/Release/libcef.so
-    )
-    set_target_properties(_pybindcef PROPERTIES
-        INSTALL_RPATH_USE_LINK_PATH TRUE
-        INSTALL_RPATH "$ORIGIN"
     )
 endif()
 
