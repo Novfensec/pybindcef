@@ -110,6 +110,9 @@ class MainApp(CarbonApp):
         root = Builder.load_string(app_kv)
         browser: CefWebView = root.ids.browser
 
+        # Enable network-level adblocking and YouTube ad skipping
+        browser.enable_adblock()
+
         def on_title(title):
             root.ids.title_label.text = title
 

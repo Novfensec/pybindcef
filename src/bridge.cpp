@@ -102,14 +102,15 @@ struct BrowserInstance
         browser->GetHost()->Invalidate(PET_VIEW);
     }
 
-    void send_mouse_event(int x, int y, int event_type, bool is_up, int button_type)
+    void send_mouse_event(int x, int y, int event_type, bool is_up, int button_type,
+                          int click_count = 1, int modifiers = 0)
     {
         if (!browser || !browser->GetHost())
             return;
         CefMouseEvent ev;
         ev.x = x;
         ev.y = y;
-        ev.modifiers = 0;
+        ev.modifiers = static_cast<uint32_t>(modifiers);
         if (event_type == 0)
         {
             browser->GetHost()->SendMouseMoveEvent(ev, false);
@@ -117,7 +118,7 @@ struct BrowserInstance
         else
         {
             browser->GetHost()->SendMouseClickEvent(
-                ev, static_cast<cef_mouse_button_type_t>(button_type), is_up, 1);
+                ev, static_cast<cef_mouse_button_type_t>(button_type), is_up, click_count);
         }
     }
 
@@ -245,7 +246,8 @@ PYBIND11_MODULE(_pybindcef, m)
         .def("resize", &BrowserInstance::resize, py::arg("w"), py::arg("h"))
         .def("send_mouse_event", &BrowserInstance::send_mouse_event,
              py::arg("x"), py::arg("y"), py::arg("event_type"),
-             py::arg("is_up"), py::arg("button_type"))
+             py::arg("is_up"), py::arg("button_type"), py::arg("click_count") = 1,
+             py::arg("modifiers") = 0)
         .def("send_mouse_wheel", &BrowserInstance::send_mouse_wheel,
              py::arg("x"), py::arg("y"), py::arg("delta_x"), py::arg("delta_y"))
         .def("send_key_event", &BrowserInstance::send_key_event,
@@ -372,7 +374,13 @@ PYBIND11_MODULE(_pybindcef, m)
                       { return b.callbacks.on_fullscreen_mode_change; }, [](BrowserInstance &b, py::object cb)
                       { b.callbacks.on_fullscreen_mode_change = cb.is_none()
                                                                     ? decltype(b.callbacks.on_fullscreen_mode_change){}
-                                                                    : cb.cast<decltype(b.callbacks.on_fullscreen_mode_change)>(); });
+                                                                    : cb.cast<decltype(b.callbacks.on_fullscreen_mode_change)>(); })
+        // Request filtering (ad blocking / content filtering)
+        .def_property("on_before_resource_load", [](const BrowserInstance &b)
+                      { return b.callbacks.on_before_resource_load; }, [](BrowserInstance &b, py::object cb)
+                      { b.callbacks.on_before_resource_load = cb.is_none()
+                                                                  ? decltype(b.callbacks.on_before_resource_load){}
+                                                                  : cb.cast<decltype(b.callbacks.on_before_resource_load)>(); });
 
     //
     // Module-level functions
@@ -417,7 +425,14 @@ PYBIND11_MODULE(_pybindcef, m)
         window_info.shared_texture_enabled = shared_texture_enabled;
 
         CefBrowserSettings settings;
-        settings.windowless_frame_rate = fps;
+        settings.windowless_frame_rate          = fps;
+        // Ensure JS, images, and local storage are always on.
+        settings.javascript                     = STATE_ENABLED;
+        settings.image_loading                  = STATE_ENABLED;
+        settings.image_shrink_standalone_to_fit = STATE_DISABLED;
+        settings.local_storage                  = STATE_ENABLED;
+        // Note: autoplay is controlled via the --autoplay-policy command-line
+        // switch passed to CEF at initialization, not via CefBrowserSettings.
 
         /*
         MainClient takes a raw pointer into inst->callbacks.

@@ -10,6 +10,7 @@ MainClient::MainClient(BrowserCallbacks *cb)
     context_menu_handler_ = new ContextMenuHandler(cb);
     jsdialog_handler_ = new JSDialogHandler(cb);
     find_handler_ = new FindHandler(cb);
+    request_handler_ = new RequestHandler(cb);
 }
 
 CefRefPtr<CefRenderHandler> MainClient::GetRenderHandler() { return render_handler_; }
@@ -20,4 +21,5 @@ CefRefPtr<CefDownloadHandler> MainClient::GetDownloadHandler() { return download
 CefRefPtr<CefContextMenuHandler> MainClient::GetContextMenuHandler() { return context_menu_handler_; }
 CefRefPtr<CefJSDialogHandler> MainClient::GetJSDialogHandler() { return jsdialog_handler_; }
 CefRefPtr<CefFindHandler> MainClient::GetFindHandler() { return find_handler_; }
+CefRefPtr<CefRequestHandler> MainClient::GetRequestHandler() { return request_handler_; }
 CefRefPtr<RenderHandler> MainClient::GetCustomRenderHandler() { return render_handler_; }

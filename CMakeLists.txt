@@ -46,6 +46,7 @@ set(SOURCES
     src/handlers/context_menu_handler.cpp
     src/handlers/jsdialog_handler.cpp
     src/handlers/find_handler.cpp
+    src/handlers/request_handler.cpp
 )
 
 if(WIN32)

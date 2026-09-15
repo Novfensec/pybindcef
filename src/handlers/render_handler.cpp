@@ -19,8 +19,17 @@ void RenderHandler::OnPaint(CefRefPtr<CefBrowser> browser,
 
     py::gil_scoped_acquire acquire;
     size_t size = static_cast<size_t>(width) * height * 4;
-    py::bytes data(static_cast<const char *>(buffer), size);
-    cb_->on_cpu_paint(data, width, height);
+
+    // Zero-copy memoryview over CEF's buffer (readonly=false for Kivy compat).
+    py::memoryview data = py::memoryview::from_memory(
+        const_cast<void *>(buffer), size, false);
+
+    // Build the list of dirty rectangles as Python tuples (x, y, w, h).
+    py::list rects;
+    for (const auto &r : dirtyRects)
+        rects.append(py::make_tuple(r.x, r.y, r.width, r.height));
+
+    cb_->on_cpu_paint(data, width, height, rects);
 }
 
 void RenderHandler::OnAcceleratedPaint(CefRefPtr<CefBrowser> browser,

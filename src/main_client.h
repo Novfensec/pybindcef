@@ -8,6 +8,7 @@
 #include "handlers/include/context_menu_handler.h"
 #include "handlers/include/jsdialog_handler.h"
 #include "handlers/include/find_handler.h"
+#include "handlers/include/request_handler.h"
 
 /*
 # MainClient
@@ -29,6 +30,7 @@ public:
     CefRefPtr<CefContextMenuHandler> GetContextMenuHandler() override;
     CefRefPtr<CefJSDialogHandler> GetJSDialogHandler() override;
     CefRefPtr<CefFindHandler> GetFindHandler() override;
+    CefRefPtr<CefRequestHandler> GetRequestHandler() override;
     CefRefPtr<RenderHandler> GetCustomRenderHandler();
 
     IMPLEMENT_REFCOUNTING(MainClient);
@@ -42,4 +44,5 @@ private:
     CefRefPtr<ContextMenuHandler> context_menu_handler_;
     CefRefPtr<JSDialogHandler> jsdialog_handler_;
     CefRefPtr<FindHandler> find_handler_;
+    CefRefPtr<RequestHandler> request_handler_;
 };
