@@ -3,14 +3,16 @@ High-performance Python bindings for Chromium Embedded Framework (CEF)
 
 Video testing: https://youtu.be/yWIah-r6sbw?si=O_uNuDDE8uSf6-Nk
 
+Thanks to [pybind11](https://github.com/pybind/pybind11) and [CEF](https://github.com/chromiumembedded/cef) for existing in this world.
+This project is inspired from [cefpython](https://github.com/cztomczak/cefpython)
+
 > [!NOTE]
 > Complete examples of using with Kivy, Tkinter and PyQt6 are under `examples`.
 
-Thanks to [pybind11](https://github.com/pybind/pybind11) and [CEF](https://github.com/chromiumembedded/cef) for existing in this world.
-
-Inspired from [cefpython](https://github.com/cztomczak/cefpython)
-
-<!-- GitAds-Verify: N1APKAO73QIHMPQPGMQSCVEETCXBNDA7 -->
+> [!TIP]
+> NfsBrowser is a modern web browser built with Python, integrating Kivy, CarbonKivy, and the Chromium Embedded Framework (CEF) via pybindcef.
+>
+> https://github.com/Novfensec/NfsBrowser-Desktop
 
 ## GitAds Sponsored
 [![Sponsored by GitAds](https://gitads.dev/v1/ad-serve?source=novfensec/pybindcef@github)](https://gitads.dev/v1/ad-track?source=novfensec/pybindcef@github)
