@@ -14,10 +14,6 @@ This project is inspired from [cefpython](https://github.com/cztomczak/cefpython
 >
 > https://github.com/Novfensec/NfsBrowser-Desktop
 
-## GitAds Sponsored
-[![Sponsored by GitAds](https://gitads.dev/v1/ad-serve?source=novfensec/pybindcef@github)](https://gitads.dev/v1/ad-track?source=novfensec/pybindcef@github)
-
-
 ## Financial Support
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/Novfensec?style=for-the-badge&label=Sponsor%20Novfensec&logo=github&color=000000)](https://github.com/sponsors/Novfensec)
 
